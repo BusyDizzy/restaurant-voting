@@ -21,6 +21,8 @@
         <junit.jupiter.version>5.9.2</junit.jupiter.version>
         <assertj.version>3.24.2</assertj.version>
         <hamcrest.version>2.2</hamcrest.version>
+
+        <jackson.version>2.14.2</jackson.version>
     </properties>
     <dependencies>
         <dependency>
@@ -39,6 +41,23 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+
+        <!-- JSON-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-hibernate5</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
         </dependency>
 
         <dependency>

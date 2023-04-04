@@ -16,18 +16,18 @@ public class RestaurantServiceTest extends AbstractServiceTest {
     private RestaurantService service;
 
     @Test
-    public void delete() {
+    void delete() {
         service.delete(RESTAURANT1_ID);
         assertThrows(NotFoundException.class, () -> service.get(RESTAURANT1_ID));
     }
 
     @Test
-    public void deleteNotFound() {
+    void deleteNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
 
     @Test
-    public void create() {
+    void create() {
         Restaurant created = service.create(getNew());
         int newId = created.id();
         Restaurant newRestaurant = getNew();
@@ -37,31 +37,31 @@ public class RestaurantServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void duplicateNameCreate() {
+    void duplicateNameCreate() {
         assertThrows(DataAccessException.class, () ->
                 service.create(new Restaurant(null, restaurant1.getName(), "duplicate")));
     }
 
     @Test
-    public void get() {
+    void get() {
         Restaurant actual = service.get(RESTAURANT1_ID);
         RESTAURANT_MATCHER.assertMatch(actual, restaurant1);
     }
 
     @Test
-    public void getNotFound() {
+    void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 
     @Test
-    public void update() {
+    void update() {
         Restaurant updated = getUpdated();
         service.update(updated);
         RESTAURANT_MATCHER.assertMatch(service.get(RESTAURANT1_ID), getUpdated());
     }
 
     @Test
-    public void getAll() {
+    void getAll() {
         RESTAURANT_MATCHER.assertMatch(service.getAll(), restaurants);
     }
 }

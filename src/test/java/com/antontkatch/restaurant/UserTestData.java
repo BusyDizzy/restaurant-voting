@@ -8,7 +8,7 @@ import java.util.Date;
 
 
 public class UserTestData {
-    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator("registered", "roles", "votes");
+    public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "votes");
 
     public static final int USER_ID = 1;
     public static final int ADMIN_ID = 2;

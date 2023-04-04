@@ -21,7 +21,7 @@ public class UserServiceTest extends AbstractServiceTest {
     protected UserService service;
 
     @Test
-    public void create() {
+    void create() {
         User created = service.create(getNew());
         int newId = created.id();
         User newUser = getNew();
@@ -31,48 +31,48 @@ public class UserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void duplicateMailCreate() {
+    void duplicateMailCreate() {
         assertThrows(DataAccessException.class, () ->
                 service.create(new User(null, "Duplicate", "user@yandex.ru", "newPass", Role.USER)));
     }
 
     @Test
-    public void delete() {
+    void delete() {
         service.delete(USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(USER_ID));
     }
 
     @Test
-    public void deletedNotFound() {
+    void deletedNotFound() {
         assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
     }
 
     @Test
-    public void get() {
+    void get() {
         User user = service.get(USER_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
     }
 
     @Test
-    public void getNotFound() {
+    void getNotFound() {
         assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
     }
 
     @Test
-    public void getByEmail() {
+    void getByEmail() {
         User user = service.getByEmail("admin@gmail.com");
         USER_MATCHER.assertMatch(user, admin);
     }
 
     @Test
-    public void update() {
+    void update() {
         User updated = getUpdated();
         service.update(updated);
         USER_MATCHER.assertMatch(service.get(USER_ID), getUpdated());
     }
 
     @Test
-    public void getAll() {
+    void getAll() {
         List<User> all = service.getAll();
         USER_MATCHER.assertMatch(all, admin, guest, user);
     }

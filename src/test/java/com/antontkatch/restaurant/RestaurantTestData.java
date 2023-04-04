@@ -7,7 +7,7 @@ import java.util.List;
 
 public class RestaurantTestData {
 
-    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator("votes", "menus");
+    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "votes", "menus");
 
     public static final int NOT_FOUND = 10;
     public static final int RESTAURANT1_ID = 1;

@@ -4,6 +4,7 @@ import com.antontkatch.restaurant.TimingExtension;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.antontkatch.restaurant.util.ValidationUtil.getRootCause;
@@ -11,6 +12,7 @@ import static com.antontkatch.restaurant.util.ValidationUtil.getRootCause;
 @SpringBootTest
 @Transactional
 @ExtendWith(TimingExtension.class)
+@ExtendWith(SpringExtension.class)
 public abstract class AbstractServiceTest {
 
     //  Check root cause in JUnit: https://github.com/junit-team/junit4/pull/778

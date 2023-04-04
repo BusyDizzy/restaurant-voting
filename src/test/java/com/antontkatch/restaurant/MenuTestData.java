@@ -10,7 +10,7 @@ import static com.antontkatch.restaurant.RestaurantTestData.*;
 
 public class MenuTestData {
 
-    public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator("dishes");
+    public static final MatcherFactory.Matcher<Menu> MENU_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Menu.class, "dishes");
 
     public static final int NOT_FOUND = 10;
 
