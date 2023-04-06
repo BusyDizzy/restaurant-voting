@@ -2,9 +2,9 @@ package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.service.UserService;
+import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
-import com.antontkatch.restaurant.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -81,7 +81,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(AdminRestController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_MATCHER.contentJson(admin, guest, user));
+                .andExpect(USER_MATCHER.contentJson(user, admin, guest));
     }
 
 //    @Test

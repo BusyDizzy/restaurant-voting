@@ -7,7 +7,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-import static com.antontkatch.restaurant.util.ValidationUtil.checkNotFoundWithId;
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class MenuService {
@@ -37,5 +37,13 @@ public class MenuService {
     public Menu create(Menu menu, int restaurantId) {
         Assert.notNull(menu, "menu must not be null");
         return repository.save(menu, restaurantId);
+    }
+
+    public Menu getWithDishes(int id, int restaurantId) {
+        return checkNotFoundWithId(repository.getWithDishes(id, restaurantId), id);
+    }
+
+    public Menu getMenuOfTheDayWithDishes(int restaurantId) {
+        return repository.getTodayMenu(restaurantId);
     }
 }

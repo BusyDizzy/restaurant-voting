@@ -1,4 +1,4 @@
-package com.antontkatch.restaurant.web.json;
+package com.antontkatch.restaurant.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

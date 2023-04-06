@@ -4,11 +4,11 @@ import com.antontkatch.restaurant.UserTestData;
 import com.antontkatch.restaurant.model.Role;
 import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.util.exception.NotFoundException;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static com.antontkatch.restaurant.UserTestData.*;
@@ -74,7 +74,7 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test
     void getAll() {
         List<User> all = service.getAll();
-        USER_MATCHER.assertMatch(all, admin, guest, user);
+        USER_MATCHER.assertMatch(all, user, admin, guest);
     }
 
     @Test
@@ -83,6 +83,6 @@ public class UserServiceTest extends AbstractServiceTest {
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.USER)));
 //        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", true, new Date(), Set.of())));
-//        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password",  true, new Date(), Set.of())));
+//        validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "mail@yandex.ru", "password", true, new Date(), Set.of())));
     }
 }

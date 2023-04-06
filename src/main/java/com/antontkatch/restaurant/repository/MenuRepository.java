@@ -13,4 +13,8 @@ public interface MenuRepository {
     boolean delete(int id, int restaurantId);
 
     Menu save(Menu menu, int restaurantId);
+
+    Menu getWithDishes(int id, int restaurantId);
+
+    Menu getTodayMenu(int restaurantId);
 }

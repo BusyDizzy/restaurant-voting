@@ -2,8 +2,8 @@ package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.service.UserService;
+import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
-import com.antontkatch.restaurant.web.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

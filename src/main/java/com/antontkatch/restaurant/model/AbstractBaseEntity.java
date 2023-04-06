@@ -1,17 +1,19 @@
 package com.antontkatch.restaurant.model;
 
-import jakarta.persistence.*;
+import com.antontkatch.restaurant.HasId;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
+
+import javax.persistence.*;
 
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractBaseEntity {
+public abstract class AbstractBaseEntity implements HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

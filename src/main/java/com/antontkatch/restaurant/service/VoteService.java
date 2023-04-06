@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.antontkatch.restaurant.util.ValidationUtil.checkNotFoundWithId;
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class VoteService {

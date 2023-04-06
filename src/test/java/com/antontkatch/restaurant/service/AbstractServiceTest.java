@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.antontkatch.restaurant.util.ValidationUtil.getRootCause;
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.getRootCause;
 
 @SpringBootTest
 @Transactional

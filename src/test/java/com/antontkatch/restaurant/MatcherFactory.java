@@ -1,6 +1,6 @@
 package com.antontkatch.restaurant;
 
-import com.antontkatch.restaurant.web.json.JsonUtil;
+import com.antontkatch.restaurant.util.JsonUtil;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;

@@ -39,6 +39,6 @@ public class DataJpaUserRepository implements UserRepository {
 
     @Override
     public List<User> getAll() {
-        return crudUserRepository.getAll();
+        return crudUserRepository.findAll();
     }
 }

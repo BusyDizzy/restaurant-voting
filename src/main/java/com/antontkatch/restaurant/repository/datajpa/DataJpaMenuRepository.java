@@ -14,9 +14,12 @@ public class DataJpaMenuRepository implements MenuRepository {
 
     private final CrudRestaurantRepository crudRestaurantRepository;
 
-    public DataJpaMenuRepository(CrudMenuRepository crudMenuRepository, CrudRestaurantRepository crudRestaurantRepository) {
+    private final CrudDishRepository crudDishRepository;
+
+    public DataJpaMenuRepository(CrudMenuRepository crudMenuRepository, CrudRestaurantRepository crudRestaurantRepository, CrudDishRepository crudDishRepository) {
         this.crudMenuRepository = crudMenuRepository;
         this.crudRestaurantRepository = crudRestaurantRepository;
+        this.crudDishRepository = crudDishRepository;
     }
 
     @Override
@@ -24,6 +27,25 @@ public class DataJpaMenuRepository implements MenuRepository {
         return crudMenuRepository.findById(id)
                 .filter(menu -> menu.getRestaurant().getId() == restaurantId)
                 .orElse(null);
+    }
+
+    @Override
+    public Menu getWithDishes(int id, int restaurantId) {
+        Menu menu = crudMenuRepository.findById(id)
+                .filter(m -> m.getRestaurant().getId() == restaurantId)
+                .orElse(null);
+        menu.setDishes(crudDishRepository.getAll(id)); // Null Pointer fix!
+        return menu;
+    }
+
+    @Override
+    public Menu getTodayMenu(int restaurantId) {
+        Menu menu = crudMenuRepository.getCurrent(restaurantId);
+        if ( menu!=null) {
+            menu.setDishes(crudDishRepository.getAll(menu.getId()));
+            return menu;
+        }
+        return null;
     }
 
     @Override

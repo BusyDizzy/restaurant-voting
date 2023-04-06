@@ -2,15 +2,18 @@ package com.antontkatch.restaurant.service;
 
 import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.to.UserTo;
+import com.antontkatch.restaurant.util.UserUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-import static com.antontkatch.restaurant.util.ValidationUtil.checkNotFound;
-import static com.antontkatch.restaurant.util.ValidationUtil.checkNotFoundWithId;
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFound;
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class UserService {
@@ -50,5 +53,20 @@ public class UserService {
     public void update(User user) {
         Assert.notNull(user, "user must not be null");
         checkNotFoundWithId(repository.save(user), user.id());
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public void update(UserTo userTo) {
+        User user = get(userTo.id());
+        User updatedUser = UserUtil.updateFromTo(user, userTo);
+        repository.save(updatedUser);   // !! need only for JDBC implementation
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Transactional
+    public void enable(int id, boolean enabled) {
+        User user = get(id);
+        user.setEnabled(enabled);
     }
 }
