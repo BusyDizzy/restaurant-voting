@@ -1,7 +1,7 @@
 package com.antontkatch.restaurant.web.restaurant;
 
 import com.antontkatch.restaurant.model.Restaurant;
-import com.antontkatch.restaurant.service.RestaurantService;
+import com.antontkatch.restaurant.repository.RestaurantRepository;
 import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
@@ -22,7 +22,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
     private static final String REST_URL = RestaurantController.REST_URL + '/';
 
     @Autowired
-    private RestaurantService service;
+    private RestaurantRepository repository;
 
     @Test
     void getAll() throws Exception {
@@ -47,7 +47,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> service.get(RESTAURANT1_ID));
+        assertThrows(NotFoundException.class, () -> repository.get(RESTAURANT1_ID));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        RESTAURANT_MATCHER.assertMatch(service.get(RESTAURANT1_ID), updated);
+        RESTAURANT_MATCHER.assertMatch(repository.get(RESTAURANT1_ID), updated);
     }
 
     @Test
@@ -73,6 +73,6 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
-        RESTAURANT_MATCHER.assertMatch(service.get(newId), newRestaurant);
+        RESTAURANT_MATCHER.assertMatch(repository.get(newId), newRestaurant);
     }
 }

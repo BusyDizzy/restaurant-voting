@@ -1,7 +1,7 @@
 package com.antontkatch.restaurant.web.restaurant;
 
 import com.antontkatch.restaurant.model.Restaurant;
-import com.antontkatch.restaurant.service.RestaurantService;
+import com.antontkatch.restaurant.repository.RestaurantRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,25 +26,25 @@ public class RestaurantController {
     static final String REST_URL = "/rest/restaurants";
 
     @Autowired
-    private RestaurantService service;
+    private RestaurantRepository repository;
 
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return service.getAll();
+        return repository.getAll();
     }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
         log.info("get {}", id);
-        return service.get(id);
+        return repository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
-        Restaurant created = service.create(restaurant);
+        Restaurant created = repository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -55,7 +55,7 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        service.delete(id);
+        repository.delete(id);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -63,6 +63,6 @@ public class RestaurantController {
     public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         assureIdConsistent(restaurant, id);
-        service.update(restaurant);
+        repository.save(restaurant);
     }
 }

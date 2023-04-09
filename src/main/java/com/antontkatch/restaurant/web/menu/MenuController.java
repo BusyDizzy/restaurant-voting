@@ -1,7 +1,7 @@
 package com.antontkatch.restaurant.web.menu;
 
 import com.antontkatch.restaurant.model.Menu;
-import com.antontkatch.restaurant.service.MenuService;
+import com.antontkatch.restaurant.repository.MenuRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,30 +25,30 @@ public class MenuController {
     static final String REST_URL = "/rest/restaurants/{restaurantId}/menus";
 
     @Autowired
-    private MenuService service;
+    private MenuRepository repository;
 
     @GetMapping
     public List<Menu> getAll(@PathVariable int restaurantId) {
         log.info("getAll");
-        return service.getAll(restaurantId);
+        return repository.getAll(restaurantId);
     }
 
     @GetMapping("/{menuId}")
     public Menu get(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("get menu {} of restaurant {}", menuId, restaurantId);
-        return service.get(menuId, restaurantId);
+        return repository.get(menuId, restaurantId);
     }
 
     @GetMapping("/{menuId}/with-dishes")
     public Menu getWithDishes(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("get menu {} of restaurant {}", menuId, restaurantId);
-        return service.getWithDishes(menuId, restaurantId);
+        return repository.getWithDishes(menuId, restaurantId);
     }
 
     @GetMapping("/today")
     public Menu getTodayMenu(@PathVariable int restaurantId) {
         log.info("get today's menu of restaurant {}", restaurantId);
-        return service.getMenuOfTheDayWithDishes(restaurantId);
+        return repository.getTodayMenu(restaurantId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -56,7 +56,7 @@ public class MenuController {
         String URL = "/rest/restaurants/" + restaurantId + "/menus";
         log.info("create {} of restaurant {}", menu, restaurantId);
         checkNew(menu);
-        Menu created = service.create(menu, restaurantId);
+        Menu created = repository.save(menu, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -67,7 +67,7 @@ public class MenuController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("delete menu {} of restaurant {}", menuId, restaurantId);
-        service.delete(menuId, restaurantId);
+        repository.delete(menuId, restaurantId);
     }
 
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -75,6 +75,6 @@ public class MenuController {
     public void update(@RequestBody Menu menu, @PathVariable int restaurantId, @PathVariable int menuId) {
         log.info("update {} with restaurant id={}", menu, restaurantId);
         assureIdConsistent(menu, menuId);
-        service.update(menu, restaurantId);
+        repository.save(menu, restaurantId);
     }
 }

@@ -14,6 +14,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNot
 import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
 
 @Repository
+@Transactional(readOnly = true)
 public class DataJpaUserRepository implements UserRepository {
 
     private final CrudUserRepository crudUserRepository;

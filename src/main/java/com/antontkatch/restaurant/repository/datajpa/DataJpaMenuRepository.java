@@ -4,10 +4,14 @@ import com.antontkatch.restaurant.model.Menu;
 import com.antontkatch.restaurant.repository.MenuRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
+
 @Repository
+@Transactional(readOnly = true)
 public class DataJpaMenuRepository implements MenuRepository {
 
     private final CrudMenuRepository crudMenuRepository;
@@ -24,9 +28,11 @@ public class DataJpaMenuRepository implements MenuRepository {
 
     @Override
     public Menu get(int id, int restaurantId) {
-        return crudMenuRepository.findById(id)
-                .filter(menu -> menu.getRestaurant().getId() == restaurantId)
+        Menu menu = crudMenuRepository.findById(id)
+                .filter(m -> m.getRestaurant().getId() == restaurantId)
                 .orElse(null);
+        checkNotFoundWithId(menu, id);
+        return menu;
     }
 
     @Override
@@ -34,18 +40,19 @@ public class DataJpaMenuRepository implements MenuRepository {
         Menu menu = crudMenuRepository.findById(id)
                 .filter(m -> m.getRestaurant().getId() == restaurantId)
                 .orElse(null);
-        menu.setDishes(crudDishRepository.getAll(id)); // Null Pointer fix!
+        Assert.notNull(menu, "menu must not be null");
+        checkNotFoundWithId(menu, id);
+        menu.setDishes(crudDishRepository.getAll(id)); // Null Pointer fix needed!
         return menu;
     }
 
     @Override
     public Menu getTodayMenu(int restaurantId) {
         Menu menu = crudMenuRepository.getCurrent(restaurantId);
-        if ( menu!=null) {
-            menu.setDishes(crudDishRepository.getAll(menu.getId()));
-            return menu;
-        }
-        return null;
+        Assert.notNull(menu, "menu must not be null");
+        checkNotFoundWithId(menu, menu.id());
+        menu.setDishes(crudDishRepository.getAll(menu.getId()));
+        return menu;
     }
 
     @Override
@@ -55,16 +62,19 @@ public class DataJpaMenuRepository implements MenuRepository {
 
     @Override
     public boolean delete(int id, int restaurantId) {
-        return crudMenuRepository.delete(id, restaurantId) != 0;
+        checkNotFoundWithId(crudMenuRepository.delete(id, restaurantId) != 0, id);
+        return true;
     }
 
     @Override
     @Transactional
     public Menu save(Menu menu, int restaurantId) {
+        Assert.notNull(menu, "menu must not be null");
         if (!menu.isNew() && get(menu.id(), restaurantId) == null) {
             return null;
         }
         menu.setRestaurant(crudRestaurantRepository.getReferenceById(restaurantId));
-        return crudMenuRepository.save(menu);
+        checkNotFoundWithId(crudMenuRepository.save(menu), menu.id());
+        return menu;
     }
 }
