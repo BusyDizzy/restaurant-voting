@@ -33,20 +33,17 @@ public class MenuController {
         return service.getAll(restaurantId);
     }
 
-
     @GetMapping("/{menuId}")
     public Menu get(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("get menu {} of restaurant {}", menuId, restaurantId);
         return service.get(menuId, restaurantId);
     }
 
-
     @GetMapping("/{menuId}/with-dishes")
     public Menu getWithDishes(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("get menu {} of restaurant {}", menuId, restaurantId);
         return service.getWithDishes(menuId, restaurantId);
     }
-
 
     @GetMapping("/today")
     public Menu getTodayMenu(@PathVariable int restaurantId) {
@@ -55,12 +52,13 @@ public class MenuController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Menu> create(Menu menu, @PathVariable int restaurantId) {
+    public ResponseEntity<Menu> create(@RequestBody Menu menu, @PathVariable int restaurantId) {
+        String URL = "/rest/restaurants/" + restaurantId + "/menus";
         log.info("create {} of restaurant {}", menu, restaurantId);
         checkNew(menu);
         Menu created = service.create(menu, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{id}")
+                .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
@@ -72,10 +70,11 @@ public class MenuController {
         service.delete(menuId, restaurantId);
     }
 
-
-    public void update(Menu menu, @PathVariable int restaurantId) {
+    @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@RequestBody Menu menu, @PathVariable int restaurantId, @PathVariable int menuId) {
         log.info("update {} with restaurant id={}", menu, restaurantId);
-        assureIdConsistent(menu, restaurantId);
+        assureIdConsistent(menu, menuId);
         service.update(menu, restaurantId);
     }
 }

@@ -1,17 +1,17 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.service.UserService;
+import com.antontkatch.restaurant.repository.UserRepository;
 import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.antontkatch.restaurant.UserTestData.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -22,7 +22,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     private static final String REST_URL = AdminRestController.REST_URL + '/';
 
     @Autowired
-    private UserService userService;
+    private UserRepository repository;
 
     @Test
     void get() throws Exception {
@@ -47,8 +47,22 @@ class AdminRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.delete(REST_URL + USER_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> userService.get(USER_ID));
+        assertThrows(NotFoundException.class, () -> repository.get(USER_ID));
     }
+
+//    @Test
+//    void getUnAuth() throws Exception {
+//        perform(MockMvcRequestBuilders.get(REST_URL))
+//                .andExpect(status().isUnauthorized());
+//    }
+
+
+//    @Test
+//    void getForbidden() throws Exception {
+//        perform(MockMvcRequestBuilders.get(REST_URL)
+//                .with(userHttpBasic(user)))
+//                .andExpect(status().isForbidden());
+//    }
 
     @Test
     void update() throws Exception {
@@ -58,23 +72,9 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userService.get(USER_ID), updated);
+        USER_MATCHER.assertMatch(repository.get(USER_ID), updated);
     }
 
-    @Test
-    void createWithLocation() throws Exception {
-        User newUser = getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(AdminRestController.REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newUser)))
-                .andExpect(status().isCreated());
-
-        User created = USER_MATCHER.readFromJson(action);
-        int newId = created.id();
-        newUser.setId(newId);
-        USER_MATCHER.assertMatch(created, newUser);
-        USER_MATCHER.assertMatch(userService.get(newId), newUser);
-    }
 
     @Test
     void getAll() throws Exception {
@@ -84,13 +84,16 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(USER_MATCHER.contentJson(user, admin, guest));
     }
 
-//    @Test
-//    void getWithMeals() throws Exception {
-//        assumeDataJpa();
-//        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals"))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(USER_WITH_MEALS_MATCHER.contentJson(admin));
-//    }
+    @Test
+    void enable() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID)
+                        .param("enabled", "false")
+                        .contentType(MediaType.APPLICATION_JSON)
+//                .with(userHttpBasic(admin))
+        )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertFalse(repository.get(USER_ID).isEnabled());
+    }
 }

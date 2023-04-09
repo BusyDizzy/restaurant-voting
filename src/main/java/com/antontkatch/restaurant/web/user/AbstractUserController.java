@@ -1,12 +1,14 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.service.UserService;
+import com.antontkatch.restaurant.repository.UserRepository;
 import com.antontkatch.restaurant.to.UserTo;
 import com.antontkatch.restaurant.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -18,49 +20,57 @@ public abstract class AbstractUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserService service;
+    private UserRepository repository;
 
+    @Cacheable("users")
     public List<User> getAll() {
         log.info("getAll");
-        return service.getAll();
+        return repository.getAll();
     }
 
     public User get(int id) {
         log.info("get {}", id);
-        return service.get(id);
+        return repository.get(id);
     }
 
     public void create(UserTo userTo) {
         log.info("create {}", userTo);
         checkNew(userTo);
-        service.create(UserUtil.createNewFromTo(userTo));
+        repository.save(UserUtil.createNewFromTo(userTo));
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         log.info("create {}", user);
         checkNew(user);
-        return service.create(user);
+        return repository.save(user);
     }
 
     public void delete(int id) {
         log.info("delete {}", id);
-        service.delete(id);
+        repository.delete(id);
     }
 
     public void update(User user, int id) {
         log.info("update {} with id={}", user, id);
         assureIdConsistent(user, id);
-        service.update(user);
+        repository.save(user);
     }
 
     public void update(UserTo userTo, int id) {
-        log.info("update {} with id={}", userTo, id);
         assureIdConsistent(userTo, id);
-        service.update(userTo);
+        log.info("update {} with id={}", userTo, id);
+        User user = get(userTo.id());
+        UserUtil.updateFromTo(user, userTo);
     }
 
     public User getByMail(String email) {
         log.info("getByEmail {}", email);
-        return service.getByEmail(email);
+        return repository.getByEmail(email);
+    }
+
+    public void enable(int id, boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        repository.enable(id, enabled);
     }
 }

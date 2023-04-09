@@ -1,8 +1,10 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.service.UserService;
+import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.to.UserTo;
 import com.antontkatch.restaurant.util.JsonUtil;
+import com.antontkatch.restaurant.util.UserUtil;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private UserService userService;
+    private UserRepository repository;
 
     @Test
     void get() throws Exception {
@@ -29,21 +31,28 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(USER_MATCHER.contentJson(user));
     }
 
+//    @Test
+//    void getUnAuth() throws Exception {
+//        perform(MockMvcRequestBuilders.get(REST_URL))
+//                .andExpect(status().isUnauthorized());
+//    }
+
     @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andExpect(status().isNoContent());
-        USER_MATCHER.assertMatch(userService.getAll(), admin, guest);
+        USER_MATCHER.assertMatch(repository.getAll(), admin, guest);
     }
 
     @Test
     void update() throws Exception {
-        User updated = getUpdated();
+        UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword");
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+//                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(userService.get(USER_ID), updated);
+        USER_MATCHER.assertMatch(repository.get(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
     }
 }
