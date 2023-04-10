@@ -23,7 +23,7 @@ public class RestaurantController {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    static final String REST_URL = "/rest/restaurants";
+    public static final String REST_URL = "/api/admin/restaurants";
 
     @Autowired
     private RestaurantRepository repository;

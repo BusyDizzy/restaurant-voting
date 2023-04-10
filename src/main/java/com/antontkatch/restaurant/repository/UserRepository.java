@@ -3,6 +3,7 @@ package com.antontkatch.restaurant.repository;
 import com.antontkatch.restaurant.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
     // null if not found, when updated
@@ -20,4 +21,6 @@ public interface UserRepository {
     List<User> getAll();
 
     void enable(int id, boolean enabled);
+
+    Optional<User> findByEmailIgnoreCase(String email);
 }

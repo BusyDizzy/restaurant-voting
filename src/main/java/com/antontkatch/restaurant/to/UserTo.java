@@ -1,25 +1,31 @@
 package com.antontkatch.restaurant.to;
 
-import com.antontkatch.restaurant.HasIdAndEmail;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.beans.ConstructorProperties;
+import java.io.Serial;
+import java.io.Serializable;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@ToString(callSuper = true, exclude = {"password"})
+public class UserTo extends NamedTo implements Serializable {
 
-public class UserTo extends NamedTo implements HasIdAndEmail {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Email
     @NotBlank
     @Size(max = 128)
     String email;
 
     @NotBlank
-    @Size(min = 5, max = 32)
+    @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
     String password;
 
 

@@ -73,4 +73,8 @@ public abstract class AbstractUserController {
         log.info(enabled ? "enable {}" : "disable {}", id);
         repository.enable(id, enabled);
     }
+
+    protected User prepareAndSave(User user) {
+        return repository.save(UserUtil.prepareToSave(user));
+    }
 }

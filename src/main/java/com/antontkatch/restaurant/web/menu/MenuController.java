@@ -2,6 +2,7 @@ package com.antontkatch.restaurant.web.menu;
 
 import com.antontkatch.restaurant.model.Menu;
 import com.antontkatch.restaurant.repository.MenuRepository;
+import com.antontkatch.restaurant.web.restaurant.RestaurantController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 public class MenuController {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
-    static final String REST_URL = "/rest/restaurants/{restaurantId}/menus";
+    static final String REST_URL = RestaurantController.REST_URL + "/" + "{restaurantId}/menus";
 
     @Autowired
     private MenuRepository repository;
@@ -53,7 +54,7 @@ public class MenuController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Menu> create(@RequestBody Menu menu, @PathVariable int restaurantId) {
-        String URL = "/rest/restaurants/" + restaurantId + "/menus";
+        String URL = RestaurantController.REST_URL + "/" + restaurantId + "/menus";
         log.info("create {} of restaurant {}", menu, restaurantId);
         checkNew(menu);
         Menu created = repository.save(menu, restaurantId);

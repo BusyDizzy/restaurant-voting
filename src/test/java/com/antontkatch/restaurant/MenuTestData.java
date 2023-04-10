@@ -35,11 +35,11 @@ public class MenuTestData {
 
     public static final Menu menu3 = new Menu(MENU3_ID, LocalDate.of(2023, Month.MARCH, 6), restaurant3);
 
-    public static final Menu menu4 = new Menu(MENU4_ID, LocalDate.of(2023, Month.APRIL, 9), restaurant1);
+    public static final Menu menu4 = new Menu(MENU4_ID, LocalDate.of(2023, Month.APRIL, 10), restaurant1);
 
-    public static final Menu menu5 = new Menu(MENU5_ID, LocalDate.of(2023, Month.APRIL, 9), restaurant2);
+    public static final Menu menu5 = new Menu(MENU5_ID, LocalDate.of(2023, Month.APRIL, 10), restaurant2);
 
-    public static final Menu menu6 = new Menu(MENU6_ID, LocalDate.of(2023, Month.APRIL, 9), restaurant3);
+    public static final Menu menu6 = new Menu(MENU6_ID, LocalDate.of(2023, Month.APRIL, 10), restaurant3);
 
     public static Menu getNew() {
         return new Menu(null, LocalDate.of(2023, Month.APRIL, 7), restaurant1);

@@ -5,6 +5,8 @@ import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.to.UserTo;
 import lombok.experimental.UtilityClass;
 
+import static com.antontkatch.restaurant.config.WebSecurityConfig.PASSWORD_ENCODER;
+
 
 @UtilityClass
 public class UserUtil {
@@ -20,8 +22,12 @@ public class UserUtil {
         return user;
     }
 
+    public static UserTo asTo(User user) {
+        return new UserTo(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+    }
+
     public static User prepareToSave(User user) {
-        //       user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
+        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         user.setEmail(user.getEmail().toLowerCase());
         return user;
     }

@@ -10,9 +10,9 @@ DELETE
 FROM users;
 
 INSERT INTO users (name, email, password)
-VALUES ('User', 'user@yandex.ru', 'password'),
-       ('Admin', 'admin@gmail.com', 'admin'),
-       ('Guest', 'guest@gmail.com', 'guest');
+VALUES ('User', 'user@yandex.ru', '{noop}password'),
+       ('Admin', 'admin@gmail.com', '{noop}admin'),
+       ('Guest', 'guest@gmail.com', '{noop}guest');
 
 INSERT INTO user_role (role, user_id)
 VALUES ('USER', 1),
@@ -29,9 +29,9 @@ INSERT INTO menu(date_added, restaurant_id)
 VALUES ('2023-03-06', 1), -- 1
        ('2023-03-06', 2), -- 2
        ('2023-03-06', 3), -- 3
-       ('2023-04-09', 1), -- 4
-       ('2023-04-09', 2), -- 5
-       ('2023-04-09', 3); -- 6
+       ('2023-04-10', 1), -- 4
+       ('2023-04-10', 2), -- 5
+       ('2023-04-10', 3); -- 6
 
 
 INSERT INTO dish(name, price, menu_id)
@@ -53,6 +53,6 @@ INSERT INTO vote(user_id, restaurant_id, vote_date)
 VALUES (1, 1, '2023-03-06'), -- 1
        (2, 2, '2023-03-06'), -- 2
        (3, 1, '2023-03-06'), -- 3
-       (1, 2, '2023-04-09'), -- 4
-       (2, 1, '2023-04-09'), -- 4
-       (3, 2, '2023-04-09'); -- 6
+       (1, 2, '2023-04-10'), -- 4
+       (2, 1, '2023-04-10'), -- 4
+       (3, 2, '2023-04-10'); -- 6
