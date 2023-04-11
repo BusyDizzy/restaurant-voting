@@ -26,6 +26,7 @@ public class UserTo extends NamedTo implements Serializable {
 
     @NotBlank
     @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
 
 

@@ -1,12 +1,9 @@
 package com.antontkatch.restaurant.repository.datajpa;
 
-import com.antontkatch.restaurant.AuthorizedUser;
 import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.repository.UserRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -19,7 +16,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNot
 
 @Repository
 @Transactional(readOnly = true)
-public class DataJpaUserRepository implements UserRepository, UserDetailsService {
+public class DataJpaUserRepository implements UserRepository {
 
     private final CrudUserRepository crudUserRepository;
 
@@ -74,14 +71,5 @@ public class DataJpaUserRepository implements UserRepository, UserDetailsService
     @Override
     public Optional<User> findByEmailIgnoreCase(String email) {
         return crudUserRepository.findByEmailIgnoreCase(email);
-    }
-
-    @Override
-    public AuthorizedUser loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = findByEmailIgnoreCase(email.toLowerCase());
-        if (!user.isPresent()) {
-            throw new UsernameNotFoundException("User " + email + " is not found");
-        }
-        return new AuthorizedUser(user.get());
     }
 }

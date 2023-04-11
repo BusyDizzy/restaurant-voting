@@ -1,11 +1,14 @@
 package com.antontkatch.restaurant.web.user;
 
+import com.antontkatch.restaurant.AuthorizedUser;
 import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.to.UserTo;
 import com.antontkatch.restaurant.util.UserUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,12 +31,13 @@ public class ProfileRestController extends AbstractUserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete() {
-        super.delete(authUserId());
+    public void delete(@AuthenticationPrincipal AuthorizedUser authUser) {
+        super.delete(authUser.getId());
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     public void update(@RequestBody UserTo userTo) {
         super.update(userTo, authUserId());
     }

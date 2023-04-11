@@ -47,9 +47,9 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/api/admin/restaurants/**/menus/**").hasRole(Role.USER.name())
-                .antMatchers("/api/profile").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/admin/restaurants/**/menus/**").authenticated()
                 .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/api/profile").hasRole(Role.USER.name())
                 .antMatchers("/api/**").authenticated()
                 .and().httpBasic()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

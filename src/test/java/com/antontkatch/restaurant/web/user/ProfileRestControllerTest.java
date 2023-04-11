@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static com.antontkatch.restaurant.TestUtil.mockAuthorize;
 import static com.antontkatch.restaurant.TestUtil.userHttpBasic;
 import static com.antontkatch.restaurant.UserTestData.*;
 import static com.antontkatch.restaurant.web.user.ProfileRestController.REST_URL;
@@ -26,8 +27,9 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void get() throws Exception {
+        mockAuthorize(user);
         perform(MockMvcRequestBuilders.get(REST_URL)
-               .with(userHttpBasic(user)))
+                .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(user));
@@ -35,6 +37,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void delete() throws Exception {
+        mockAuthorize(user);
         perform(MockMvcRequestBuilders.delete(REST_URL)
                 .with(userHttpBasic(user)))
                 .andExpect(status().isNoContent());
@@ -43,6 +46,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Test
     void update() throws Exception {
+        mockAuthorize(user);
         UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword");
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))

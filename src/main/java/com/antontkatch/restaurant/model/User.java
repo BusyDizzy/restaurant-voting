@@ -1,7 +1,6 @@
 package com.antontkatch.restaurant.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,8 +38,8 @@ public class User extends AbstractNamedEntity {
     @Column(name = "password", nullable = false)
     @NotBlank
     @Size(min = 5, max = 128)
-    // https://stackoverflow.com/a/12505165/548473
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    // https://stackoverflow.com/a/12505165/548473
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")
