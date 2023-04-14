@@ -1,7 +1,7 @@
-package com.antontkatch.restaurant.web.menu;
+package com.antontkatch.restaurant.web.dish;
 
-import com.antontkatch.restaurant.model.Menu;
-import com.antontkatch.restaurant.repository.MenuRepository;
+import com.antontkatch.restaurant.model.Dish;
+import com.antontkatch.restaurant.repository.DishRepository;
 import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
@@ -12,7 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.antontkatch.restaurant.MenuTestData.*;
+import java.util.List;
+
+import static com.antontkatch.restaurant.DishTestData.*;
+import static com.antontkatch.restaurant.MenuTestData.MENU1_ID;
 import static com.antontkatch.restaurant.RestaurantTestData.RESTAURANT1_ID;
 import static com.antontkatch.restaurant.TestUtil.userHttpBasic;
 import static com.antontkatch.restaurant.UserTestData.admin;
@@ -22,77 +25,66 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MenuControllerTest extends AbstractControllerTest {
-
-    static final String REST_URL = RestaurantController.REST_URL + "/" + RESTAURANT1_ID + "/menus/";
+public class DishControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private MenuRepository repository;
+    private DishRepository repository;
+    static final String REST_URL = RestaurantController.REST_URL + "/" + RESTAURANT1_ID + "/menus/" + MENU1_ID + "/dishes/";
 
     @Test
     void getAll() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
-                .with(userHttpBasic(admin)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_MATCHER.contentJson(menu1, menu4));
-    }
-
-    @Test
-    void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + MENU1_ID)
-                .with(userHttpBasic(admin)))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_MATCHER.contentJson(menu1));
-    }
-
-    @Test
-    void getTodayMenu() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + "today")
                 .with(userHttpBasic(user)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_WITH_DISHES_MATCHER.contentJson(menu4));
+                .andExpect(DISH_MATCHER.contentJson(List.of(dish1, dish2, dish3)));
     }
 
     @Test
-    void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + MENU1_ID)
-                .with(userHttpBasic(admin)))
+    void get() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + DISH1_ID)
+                .with(userHttpBasic(user)))
+                .andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> repository.get(MENU1_ID, RESTAURANT1_ID));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(DISH_MATCHER.contentJson(dish1));
     }
 
     @Test
     void update() throws Exception {
-        Menu updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID)
+        Dish updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + DISH1_ID)
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        MENU_MATCHER.assertMatch(repository.get(MENU1_ID, RESTAURANT1_ID), updated);
+        DISH_MATCHER.assertMatch(repository.get(DISH1_ID, MENU1_ID), updated);
     }
 
     @Test
     void createWithLocation() throws Exception {
-        Menu newMenu = getNew();
+        Dish newDish = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newMenu)))
+                .content(JsonUtil.writeValue(newDish)))
                 .andExpect(status().isCreated());
 
-        Menu created = MENU_MATCHER.readFromJson(action);
+        Dish created = DISH_MATCHER.readFromJson(action);
         int newId = created.id();
-        newMenu.setId(newId);
-        MENU_MATCHER.assertMatch(created, newMenu);
-        MENU_MATCHER.assertMatch(repository.get(newId, RESTAURANT1_ID), newMenu);
+        newDish.setId(newId);
+        DISH_MATCHER.assertMatch(created, newDish);
+        DISH_MATCHER.assertMatch(repository.get(newId, MENU1_ID), newDish);
+    }
+
+    @Test
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + DISH1_ID)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+        assertThrows(NotFoundException.class, () -> repository.get(DISH1_ID, MENU1_ID));
     }
 }

@@ -4,9 +4,7 @@ import com.antontkatch.restaurant.model.Menu;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.List;
 
-import static com.antontkatch.restaurant.DishTestData.*;
 import static com.antontkatch.restaurant.RestaurantTestData.*;
 
 
@@ -47,9 +45,5 @@ public class MenuTestData {
 
     public static Menu getUpdated() {
         return new Menu(MENU1_ID, LocalDate.of(2023, Month.APRIL, 8), restaurant1);
-    }
-
-    static {
-        menu4.setDishes(List.of(dish7, dish8, dish9));
     }
 }

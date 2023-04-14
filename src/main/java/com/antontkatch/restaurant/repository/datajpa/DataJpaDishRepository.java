@@ -4,8 +4,11 @@ import com.antontkatch.restaurant.model.Dish;
 import com.antontkatch.restaurant.repository.DishRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
+
+import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
 
 @Repository
 public class DataJpaDishRepository implements DishRepository {
@@ -21,9 +24,11 @@ public class DataJpaDishRepository implements DishRepository {
 
     @Override
     public Dish get(int id, int menuId) {
-        return crudDishRepository.findById(id)
-                .filter(dish -> dish.getMenu().getId() == menuId)
+        Dish dish = crudDishRepository.findById(id)
+                .filter(d -> d.getMenu().getId() == menuId)
                 .orElse(null);
+        checkNotFoundWithId(dish, id);
+        return dish;
     }
 
     @Override
@@ -33,16 +38,19 @@ public class DataJpaDishRepository implements DishRepository {
 
     @Override
     public boolean delete(int id, int menuId) {
-        return crudDishRepository.delete(id, menuId) != 0;
+        checkNotFoundWithId(crudDishRepository.delete(id, menuId) != 0, id);
+        return true;
     }
 
     @Override
     @Transactional
     public Dish save(Dish dish, int menuId) {
+        Assert.notNull(dish, "dish must not be null");
         if (!dish.isNew() && get(dish.id(), menuId) == null) {
             return null;
         }
         dish.setMenu(crudMenuRepository.getReferenceById(menuId));
-        return crudDishRepository.save(dish);
+        checkNotFoundWithId(crudDishRepository.save(dish), dish.id());
+        return dish;
     }
 }

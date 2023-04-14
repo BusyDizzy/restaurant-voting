@@ -2,9 +2,13 @@ package com.antontkatch.restaurant;
 
 import com.antontkatch.restaurant.model.Dish;
 
+import java.util.List;
+
 import static com.antontkatch.restaurant.MenuTestData.*;
 
 public class DishTestData {
+
+    public static final MatcherFactory.Matcher<Dish> DISH_MATCHER = MatcherFactory.usingEqualsComparator(Dish.class);
 
     public static final int DISH1_ID = 1;
 
@@ -44,4 +48,16 @@ public class DishTestData {
     public static final Dish dish10 = new Dish(DISH10_ID, "Beyond Meat Cheeseburger", 15.99, menu5);
     public static final Dish dish11 = new Dish(DISH11_ID, "Crispy Fried Roll", 14.99, menu5);
     public static final Dish dish12 = new Dish(DISH12_ID, "Spicy Tuna Roll", 12.99, menu6);
+
+    public static Dish getNew() {
+        return new Dish(null, "Anti Pasta", 12.33);
+    }
+
+    public static Dish getUpdated() {
+        return new Dish(DISH1_ID, "Pepperoni Pizza Updated", 13.00);
+    }
+
+    static {
+        menu4.setDishes(List.of(dish7, dish8, dish9));
+    }
 }
