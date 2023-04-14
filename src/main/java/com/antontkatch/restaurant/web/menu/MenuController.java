@@ -23,7 +23,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 public class MenuController {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
-    static final String REST_URL = RestaurantController.REST_URL + "/" + "{restaurantId}/menus";
+    public static final String REST_URL = RestaurantController.REST_URL + "/" + "{restaurantId}/menus";
 
     @Autowired
     private MenuRepository repository;
