@@ -71,6 +71,7 @@ public class MenuControllerTest extends AbstractControllerTest {
     void update() throws Exception {
         Menu updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
@@ -82,6 +83,7 @@ public class MenuControllerTest extends AbstractControllerTest {
     void createWithLocation() throws Exception {
         Menu newMenu = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenu)))
                 .andExpect(status().isCreated());

@@ -20,6 +20,6 @@ public interface CrudMenuRepository extends JpaRepository<Menu, Integer> {
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId")
     List<Menu> getAll(@Param("restaurantId") int restaurantId);
 
-    @Query(value = "SELECT * FROM menu WHERE restaurant_id=:restaurantId and date_added = curdate()", nativeQuery = true)
+    @Query(value = "SELECT * FROM menu WHERE restaurant_id=:restaurantId and date_added = CURRENT_DATE", nativeQuery = true)
     Menu getCurrent(@Param("restaurantId") int restaurantId);
 }
