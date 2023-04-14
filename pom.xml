@@ -14,7 +14,7 @@
     <name>restaurant-voting</name>
     <description>restaurant-voting</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>19</java.version>
         <!--Cache-->
         <ehcache.version>3.10.8</ehcache.version>
         <!--    Tests  -->
