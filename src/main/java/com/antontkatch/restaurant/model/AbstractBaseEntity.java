@@ -1,9 +1,11 @@
 package com.antontkatch.restaurant.model;
 
 import com.antontkatch.restaurant.HasId;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.util.ProxyUtils;
 import org.springframework.util.Assert;
 
 import javax.persistence.*;
@@ -11,22 +13,19 @@ import javax.persistence.*;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractBaseEntity implements HasId {
+public abstract class AbstractBaseEntity implements Persistable<Integer>, HasId {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY) // https://stackoverflow.com/a/28025008/548473
     protected Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
+    @JsonIgnore
+    @Override
     public int id() {
         Assert.notNull(id, "Entity must have id");
         return id;
@@ -46,7 +45,7 @@ public abstract class AbstractBaseEntity implements HasId {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (o == null || !getClass().equals(ProxyUtils.getUserClass(o))) {
             return false;
         }
         AbstractBaseEntity that = (AbstractBaseEntity) o;

@@ -1,5 +1,7 @@
 package com.antontkatch.restaurant.to;
 
+import com.antontkatch.restaurant.HasIdAndEmail;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -13,8 +15,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
-@ToString(callSuper = true, exclude = {"password"})
-public class UserTo extends NamedTo implements Serializable {
+public class UserTo extends NamedTo implements Serializable, HasIdAndEmail {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -26,7 +27,7 @@ public class UserTo extends NamedTo implements Serializable {
 
     @NotBlank
     @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
 
 

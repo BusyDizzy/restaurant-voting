@@ -1,9 +1,8 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.repository.datajpa.DataJpaUserRepository;
 import com.antontkatch.restaurant.to.UserTo;
-import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.util.UserUtil;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private UserRepository repository;
+    private DataJpaUserRepository repository;
 
     @Test
     void get() throws Exception {
@@ -50,7 +49,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword");
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(user))
-                .content(JsonUtil.writeValue(updatedTo)))
+                .content(jsonWithPassword(updatedTo, updatedTo.getPassword())))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 

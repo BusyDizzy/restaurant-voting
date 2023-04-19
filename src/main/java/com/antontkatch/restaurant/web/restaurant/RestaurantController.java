@@ -2,8 +2,7 @@ package com.antontkatch.restaurant.web.restaurant;
 
 import com.antontkatch.restaurant.model.Restaurant;
 import com.antontkatch.restaurant.repository.RestaurantRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,9 +18,9 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 
 @RestController
 @RequestMapping(value = RestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class RestaurantController {
 
-    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     public static final String REST_URL = "/api/admin/restaurants";
 

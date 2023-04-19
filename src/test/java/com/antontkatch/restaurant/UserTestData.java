@@ -2,6 +2,8 @@ package com.antontkatch.restaurant;
 
 import com.antontkatch.restaurant.model.Role;
 import com.antontkatch.restaurant.model.User;
+import com.antontkatch.restaurant.to.UserTo;
+import com.antontkatch.restaurant.util.JsonUtil;
 
 import java.util.Collections;
 import java.util.Date;
@@ -31,5 +33,13 @@ public class UserTestData {
         updated.setEnabled(false);
         updated.setRoles(Collections.singletonList(Role.ADMIN));
         return updated;
+    }
+
+    public static String jsonWithPassword(User user, String passw) {
+        return JsonUtil.writeAdditionProps(user, "password", passw);
+    }
+
+    public static String jsonWithPassword(UserTo user, String passw) {
+        return JsonUtil.writeAdditionProps(user, "password", passw);
     }
 }

@@ -1,13 +1,14 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.repository.datajpa.DataJpaUserRepository;
 import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.antontkatch.restaurant.TestUtil.userHttpBasic;
@@ -23,7 +24,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
     private static final String REST_URL = AdminRestController.REST_URL + '/';
 
     @Autowired
-    private UserRepository repository;
+    private DataJpaUserRepository repository;
 
     @Test
     void get() throws Exception {
@@ -61,11 +62,28 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
                 .andExpect(status().isNoContent());
 
         USER_MATCHER.assertMatch(repository.get(USER_ID), updated);
     }
 
+    @Test
+    void createWithLocation() throws Exception {
+        User newUser = getNew();
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        User created = USER_MATCHER.readFromJson(action);
+        int newId = created.id();
+        newUser.setId(newId);
+        USER_MATCHER.assertMatch(created, newUser);
+        USER_MATCHER.assertMatch(repository.get(newId), newUser);
+    }
 
     @Test
     void getAll() throws Exception {

@@ -1,26 +1,34 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.repository.datajpa.DataJpaUserRepository;
 import com.antontkatch.restaurant.to.UserTo;
 import com.antontkatch.restaurant.util.UserUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import java.util.List;
 
 import static com.antontkatch.restaurant.util.validation.ValidationUtil.assureIdConsistent;
 import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew;
 
-
+@Slf4j
 public abstract class AbstractUserController {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private UserRepository repository;
+    private DataJpaUserRepository repository;
+
+    @Autowired
+    private UniqueMailValidator emailValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(emailValidator);
+    }
 
     @Cacheable("users")
     public List<User> getAll() {
@@ -33,11 +41,11 @@ public abstract class AbstractUserController {
         return repository.get(id);
     }
 
-    public void create(UserTo userTo) {
-        log.info("create {}", userTo);
-        checkNew(userTo);
-        repository.save(UserUtil.createNewFromTo(userTo));
-    }
+//    public void create(UserTo userTo) {
+//        log.info("create {}", userTo);
+//        checkNew(userTo);
+//        repository.save(UserUtil.createNewFromTo(userTo));
+//    }
 
     @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
@@ -62,6 +70,7 @@ public abstract class AbstractUserController {
         log.info("update {} with id={}", userTo, id);
         User user = get(userTo.id());
         UserUtil.updateFromTo(user, userTo);
+        repository.save(user);
     }
 
     public User getByMail(String email) {
@@ -72,9 +81,5 @@ public abstract class AbstractUserController {
     public void enable(int id, boolean enabled) {
         log.info(enabled ? "enable {}" : "disable {}", id);
         repository.enable(id, enabled);
-    }
-
-    protected User prepareAndSave(User user) {
-        return repository.save(UserUtil.prepareToSave(user));
     }
 }

@@ -1,4 +1,4 @@
-package com.antontkatch.restaurant;
+package com.antontkatch.restaurant.web;
 
 
 import com.antontkatch.restaurant.model.User;
@@ -11,7 +11,7 @@ import org.springframework.lang.NonNull;
 import java.io.Serial;
 
 @Getter
-@ToString(of = "user")
+@ToString(of = "userTo")
 public class AuthorizedUser extends org.springframework.security.core.userdetails.User {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -30,14 +30,4 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
     public void update(UserTo newTo) {
         userTo = newTo;
     }
-
-    public UserTo getUserTo() {
-        return userTo;
-    }
-
-    @Override
-    public String toString() {
-        return userTo.toString();
-    }
-
 }

@@ -1,6 +1,5 @@
 package com.antontkatch.restaurant.web;
 
-import com.antontkatch.restaurant.AuthorizedUser;
 import com.antontkatch.restaurant.to.UserTo;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;

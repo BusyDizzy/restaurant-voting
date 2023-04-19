@@ -2,6 +2,7 @@ package com.antontkatch.restaurant.web.user;
 
 
 import com.antontkatch.restaurant.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class AdminRestController extends AbstractUserController {
 
     static final String REST_URL = "/api/admin/users";
