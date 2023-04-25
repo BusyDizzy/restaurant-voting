@@ -1,9 +1,9 @@
 package com.antontkatch.restaurant.config;
 
-import com.antontkatch.restaurant.web.AuthorizedUser;
 import com.antontkatch.restaurant.model.Role;
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.repository.datajpa.DataJpaUserRepository;
+import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.web.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,7 @@ import java.util.Optional;
 public class WebSecurityConfig {
 
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    private final DataJpaUserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,7 +39,7 @@ public class WebSecurityConfig {
         return email -> {
             log.debug("Authenticating '{}'", email);
             Optional<User> optionalUser = userRepository.findByEmailIgnoreCase(email);
-            return new AuthorizedUser(optionalUser.orElseThrow(
+            return new AuthUser(optionalUser.orElseThrow(
                     () -> new UsernameNotFoundException("User '" + email + "' was not found")));
         };
     }

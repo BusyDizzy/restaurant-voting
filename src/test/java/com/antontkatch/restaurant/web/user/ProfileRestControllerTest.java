@@ -1,19 +1,21 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.repository.datajpa.DataJpaUserRepository;
+import com.antontkatch.restaurant.repository.UserRepository;
 import com.antontkatch.restaurant.to.UserTo;
-import com.antontkatch.restaurant.util.UserUtil;
+import com.antontkatch.restaurant.util.JsonUtil;
+import com.antontkatch.restaurant.util.UsersUtil;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static com.antontkatch.restaurant.TestUtil.mockAuthorize;
-import static com.antontkatch.restaurant.TestUtil.userHttpBasic;
 import static com.antontkatch.restaurant.UserTestData.*;
 import static com.antontkatch.restaurant.web.user.ProfileRestController.REST_URL;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,37 +24,89 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProfileRestControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private DataJpaUserRepository repository;
+    private UserRepository userRepository;
 
     @Test
+    @WithUserDetails(value = USER_MAIL)
     void get() throws Exception {
-        mockAuthorize(user);
-        perform(MockMvcRequestBuilders.get(REST_URL)
-                .with(userHttpBasic(user)))
+        perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_MATCHER.contentJson(user));
     }
 
     @Test
-    void delete() throws Exception {
-        mockAuthorize(user);
-        perform(MockMvcRequestBuilders.delete(REST_URL)
-                .with(userHttpBasic(user)))
-                .andExpect(status().isNoContent());
-        USER_MATCHER.assertMatch(repository.getAll(), admin, guest);
+    void getUnAuth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
+    @WithUserDetails(value = USER_MAIL)
+    void delete() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL))
+                .andExpect(status().isNoContent());
+        USER_MATCHER.assertMatch(userRepository.findAll(), admin, guest);
+    }
+
+    @Test
+    void register() throws Exception {
+        UserTo newTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword");
+        User newUser = UsersUtil.createNewFromTo(newTo);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        User created = USER_MATCHER.readFromJson(action);
+        int newId = created.id();
+        newUser.setId(newId);
+        USER_MATCHER.assertMatch(created, newUser);
+        USER_MATCHER.assertMatch(userRepository.getExisted(newId), newUser);
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
     void update() throws Exception {
-        mockAuthorize(user);
-        UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword");
+        UserTo updatedTo = new UserTo(null, "newName", USER_MAIL, "newPassword");
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(user))
-                .content(jsonWithPassword(updatedTo, updatedTo.getPassword())))
+                .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        USER_MATCHER.assertMatch(repository.get(USER_ID), UserUtil.updateFromTo(new User(user), updatedTo));
+        USER_MATCHER.assertMatch(userRepository.getExisted(USER_ID), UsersUtil.updateFromTo(new User(user), updatedTo));
+    }
+
+    @Test
+    void registerInvalid() throws Exception {
+        UserTo newTo = new UserTo(null, null, null, null);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void updateInvalid() throws Exception {
+        UserTo updatedTo = new UserTo(null, null, "password", null);
+        perform(MockMvcRequestBuilders.put(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void updateDuplicate() throws Exception {
+        UserTo updatedTo = new UserTo(null, "newName", ADMIN_MAIL, "newPassword");
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string(containsString(UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL)));
     }
 }

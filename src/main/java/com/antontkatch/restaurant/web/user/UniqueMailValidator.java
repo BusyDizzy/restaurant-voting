@@ -1,9 +1,8 @@
 package com.antontkatch.restaurant.web.user;
 
 import com.antontkatch.restaurant.HasIdAndEmail;
-import com.antontkatch.restaurant.repository.datajpa.CrudUserRepository;
-import com.antontkatch.restaurant.web.GlobalExceptionHandler;
-import com.antontkatch.restaurant.web.SecurityUtil;
+import com.antontkatch.restaurant.repository.UserRepository;
+import com.antontkatch.restaurant.web.AuthUser;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 @AllArgsConstructor
 public class UniqueMailValidator implements org.springframework.validation.Validator {
 
-    private final CrudUserRepository repository;
+    public static final String EXCEPTION_DUPLICATE_EMAIL = "User with this email already exists";
+
+    private final UserRepository repository;
     private final HttpServletRequest request;
 
     @Override
@@ -39,10 +40,10 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
                             // Workaround for update with user.id=null in request body
                             // ValidationUtil.assureIdConsistent called after this validation
                             String requestURI = request.getRequestURI();
-                            if (requestURI.endsWith("/" + dbId) || (dbId == SecurityUtil.authUserId() && requestURI.contains("/profile")))
+                            if (requestURI.endsWith("/" + dbId) || (dbId == AuthUser.authId() && requestURI.contains("/profile")))
                                 return;
                         }
-                        errors.rejectValue("email", "", GlobalExceptionHandler.EXCEPTION_DUPLICATE_EMAIL);
+                        errors.rejectValue("email", "", EXCEPTION_DUPLICATE_EMAIL);
                     });
         }
     }

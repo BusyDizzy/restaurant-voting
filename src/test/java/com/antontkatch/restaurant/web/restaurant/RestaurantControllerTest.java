@@ -1,9 +1,9 @@
 package com.antontkatch.restaurant.web.restaurant;
 
+import com.antontkatch.restaurant.error.NotFoundException;
 import com.antontkatch.restaurant.model.Restaurant;
 import com.antontkatch.restaurant.repository.RestaurantRepository;
 import com.antontkatch.restaurant.util.JsonUtil;
-import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> repository.get(RESTAURANT1_ID));
+        assertThrows(NotFoundException.class, () -> repository.getExisted(RESTAURANT1_ID));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class RestaurantControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        RESTAURANT_MATCHER.assertMatch(repository.get(RESTAURANT1_ID), updated);
+        RESTAURANT_MATCHER.assertMatch(repository.getExisted(RESTAURANT1_ID), updated);
     }
 
     @Test
@@ -80,6 +80,6 @@ public class RestaurantControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
-        RESTAURANT_MATCHER.assertMatch(repository.get(newId), newRestaurant);
+        RESTAURANT_MATCHER.assertMatch(repository.getExisted(newId), newRestaurant);
     }
 }

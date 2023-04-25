@@ -1,16 +1,8 @@
 package com.antontkatch.restaurant.repository;
 
 import com.antontkatch.restaurant.model.Restaurant;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-public interface RestaurantRepository {
-
-    Restaurant save(Restaurant restaurant);
-
-    boolean delete(int id);
-
-    Restaurant get(int id);
-
-    List<Restaurant> getAll();
+@Transactional(readOnly = true)
+public interface RestaurantRepository extends BaseRepository<Restaurant> {
 }

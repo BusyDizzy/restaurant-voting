@@ -1,23 +1,14 @@
 package com.antontkatch.restaurant.repository;
 
 import com.antontkatch.restaurant.model.Vote;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
-public interface VoteRepository {
+@Transactional(readOnly = true)
+public interface VoteRepository extends BaseRepository<Vote> {
 
-    Vote get(int id, int userId, int restaurantId);
-
-    boolean delete(int id, int userId, int restaurantId);
-
-    Vote save(Vote vote, int userId, int restaurantId);
-
-    List<Vote> getAllUserVotes(int userId);
-
-    List<Vote> getAllRestaurantVotes(int restaurantId);
-
-    List<Vote> getAll(int restaurantId, LocalDate date);
-
-    List<Vote> getAllDailyVotes(LocalDate date);
+    @Query(value = "SELECT * FROM vote WHERE vote_date = CURRENT_DATE", nativeQuery = true)
+    List<Vote> getAllTodaysVotes();
 }

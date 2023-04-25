@@ -30,13 +30,13 @@ public class RestaurantController {
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return repository.getAll();
+        return repository.findAll();
     }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
         log.info("get {}", id);
-        return repository.get(id);
+        return repository.getExisted(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

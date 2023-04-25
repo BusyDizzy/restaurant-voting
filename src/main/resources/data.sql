@@ -16,7 +16,8 @@ VALUES ('User', 'user@yandex.ru', '{noop}password'),
 
 INSERT INTO user_role (role, user_id)
 VALUES ('USER', 1),
-       ('ADMIN', 2);
+       ('ADMIN', 2),
+       ('USER', 2);
 
 
 

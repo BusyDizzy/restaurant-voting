@@ -1,20 +1,31 @@
 package com.antontkatch.restaurant.repository;
 
+import com.antontkatch.restaurant.error.NotFoundException;
 import com.antontkatch.restaurant.model.Menu;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface MenuRepository {
+@Transactional(readOnly = true)
+public interface MenuRepository extends BaseRepository<Menu> {
 
-    Menu get(int id, int restaurantId);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Menu m WHERE m.id=:id AND m.restaurant.id=:restaurantId")
+    int delete(@Param("id") int id, @Param("restaurantId") int restaurantId);
 
-    List<Menu> getAll(int restaurantId);
+    @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId")
+    List<Menu> getAll(@Param("restaurantId") int restaurantId);
 
-    boolean delete(int id, int restaurantId);
+    @Query(value = "SELECT * FROM menu WHERE restaurant_id=:restaurantId and date_added = CURRENT_DATE", nativeQuery = true)
+    Menu getCurrent(@Param("restaurantId") int restaurantId);
 
-    Menu save(Menu menu, int restaurantId);
-
-    Menu getWithDishes(int id, int restaurantId);
-
-    Menu getTodayMenu(int restaurantId);
+    default Menu getExisted(int id, int restaurantId) {
+        return findById(id)
+                .filter(menu -> menu.getRestaurant().getId() == restaurantId)
+                .orElseThrow(() -> new NotFoundException("Entity with id=" + id + " not found"));
+    }
 }

@@ -3,10 +3,7 @@ package com.antontkatch.restaurant.model;
 import com.antontkatch.restaurant.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -25,7 +22,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString(callSuper = true, exclude = {"password", "votes"})
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializable {
 
     public static final String DELETE = "User.delete";
@@ -69,9 +66,6 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializ
     @JsonManagedReference(value = "user-votes")
     private List<Vote> votes;
 
-    public User() {
-    }
-
     public User(User u) {
         this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);
     }
@@ -91,5 +85,9 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializ
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
+    public boolean hasRole(Role role) {
+        return roles != null && roles.contains(role);
     }
 }

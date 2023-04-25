@@ -1,7 +1,7 @@
 package com.antontkatch.restaurant;
 
 import com.antontkatch.restaurant.model.User;
-import com.antontkatch.restaurant.web.AuthorizedUser;
+import com.antontkatch.restaurant.web.AuthUser;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
@@ -12,7 +12,7 @@ public class TestUtil {
 
     public static void mockAuthorize(User user) {
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(new AuthorizedUser(user), null, user.getRoles()));
+                new UsernamePasswordAuthenticationToken(new AuthUser(user), null, user.getRoles()));
     }
 
     public static RequestPostProcessor userHttpBasic(User user) {

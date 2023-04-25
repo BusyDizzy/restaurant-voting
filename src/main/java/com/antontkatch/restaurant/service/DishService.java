@@ -2,41 +2,43 @@ package com.antontkatch.restaurant.service;
 
 import com.antontkatch.restaurant.model.Dish;
 import com.antontkatch.restaurant.repository.DishRepository;
+import com.antontkatch.restaurant.repository.MenuRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNotFoundWithId;
 
+@AllArgsConstructor
 @Service
 public class DishService {
 
-    private final DishRepository repository;
+    private final DishRepository dishRepository;
 
-    public DishService(DishRepository repository) {
-        this.repository = repository;
-    }
+    private final MenuRepository menuRepository;
 
     public Dish get(int id, int menuId) {
-        return checkNotFoundWithId(repository.get(id, menuId), id);
-    }
-
-    public void delete(int id, int menuId) {
-        checkNotFoundWithId(repository.delete(id, menuId), id);
+        return dishRepository.getExisted(id, menuId);
     }
 
     public List<Dish> getAll(int menuId) {
-        return repository.getAll(menuId);
+        return dishRepository.getAll(menuId);
     }
 
-    public void update(Dish dish, int menuId) {
-        Assert.notNull(dish, "dish must not be null");
-        checkNotFoundWithId(repository.save(dish, menuId), dish.id());
+    public boolean delete(int id, int menuId) {
+        return dishRepository.delete(id, menuId) != 0;
     }
 
-    public Dish create(Dish dish, int menuId) {
+
+    @Transactional
+    public Dish save(Dish dish, int menuId) {
         Assert.notNull(dish, "dish must not be null");
-        return repository.save(dish, menuId);
+        if (!dish.isNew() && get(dish.id(), menuId) == null) {
+            return null;
+        }
+        dish.setMenu(menuRepository.getReferenceById(menuId));
+        return dishRepository.save(dish);
     }
 }

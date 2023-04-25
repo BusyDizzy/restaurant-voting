@@ -1,9 +1,9 @@
 package com.antontkatch.restaurant.web.dish;
 
+import com.antontkatch.restaurant.error.NotFoundException;
 import com.antontkatch.restaurant.model.Dish;
-import com.antontkatch.restaurant.repository.DishRepository;
+import com.antontkatch.restaurant.service.DishService;
 import com.antontkatch.restaurant.util.JsonUtil;
-import com.antontkatch.restaurant.util.exception.NotFoundException;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
 import com.antontkatch.restaurant.web.restaurant.RestaurantController;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class DishControllerTest extends AbstractControllerTest {
 
     @Autowired
-    private DishRepository repository;
+    private DishService service;
     static final String REST_URL = RestaurantController.REST_URL + "/" + RESTAURANT1_ID + "/menus/" + MENU1_ID + "/dishes/";
 
     @Test
@@ -60,7 +60,7 @@ public class DishControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        DISH_MATCHER.assertMatch(repository.get(DISH1_ID, MENU1_ID), updated);
+        DISH_MATCHER.assertMatch(service.get(DISH1_ID, MENU1_ID), updated);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class DishControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);
-        DISH_MATCHER.assertMatch(repository.get(newId, MENU1_ID), newDish);
+        DISH_MATCHER.assertMatch(service.get(newId, MENU1_ID), newDish);
     }
 
     @Test
@@ -85,6 +85,6 @@ public class DishControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> repository.get(DISH1_ID, MENU1_ID));
+        assertThrows(NotFoundException.class, () -> service.get(DISH1_ID, MENU1_ID));
     }
 }
