@@ -33,7 +33,7 @@ public class Restaurant extends AbstractNamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference(value = "restaurant-votes")
+//    @JsonManagedReference(value = "restaurant-votes")
     private List<Vote> votes;
 
     public Restaurant(Integer id, String name, String address) {

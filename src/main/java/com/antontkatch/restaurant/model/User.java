@@ -1,7 +1,6 @@
 package com.antontkatch.restaurant.model;
 
 import com.antontkatch.restaurant.HasIdAndEmail;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -21,7 +20,7 @@ import java.util.*;
 @Table(name = "users")
 @Getter
 @Setter
-@ToString(callSuper = true, exclude = {"password", "votes"})
+@ToString(callSuper = true, exclude = {"password"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializable {
 
@@ -61,10 +60,10 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializ
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference(value = "user-votes")
-    private List<Vote> votes;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JsonManagedReference(value = "user-votes")
+//    private List<Vote> votes;
 
     public User(User u) {
         this(u.id, u.name, u.email, u.password, u.enabled, u.registered, u.roles);

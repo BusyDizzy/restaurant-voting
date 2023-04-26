@@ -1,6 +1,5 @@
 package com.antontkatch.restaurant.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,13 +24,13 @@ public class Vote extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
-    @JsonBackReference(value = "restaurant-votes")
+//    @JsonBackReference(value = "restaurant-votes")
     private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
-    @JsonBackReference(value = "user-votes")
+//    @JsonBackReference(value = "user-votes")
     private User user;
 
     public Vote(Integer id, LocalDate date) {
@@ -51,8 +50,6 @@ public class Vote extends AbstractBaseEntity {
         return "Vote{" +
                 "id=" + id +
                 ", date=" + date +
-                ", restaurant='" + restaurant.getName() + '\'' +
-                ", user='" + user.getName() + '\'' +
                 '}';
     }
 }
