@@ -14,7 +14,7 @@ public class VoteTestData {
 
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "restaurant", "user");
 
-    public static final int NOT_FOUND = 10;
+    public static final int NOT_FOUND = 100;
 
     public static final int VOTE1_ID = 1;
 
@@ -26,14 +26,14 @@ public class VoteTestData {
 
     public static final int VOTE5_ID = 5;
 
-    public static final int VOTE6_ID = 6;
-
     public static final Vote vote1 = new Vote(VOTE1_ID, LocalDate.of(2023, Month.MARCH, 6), restaurant1, user);
     public static final Vote vote2 = new Vote(VOTE2_ID, LocalDate.of(2023, Month.MARCH, 6), restaurant2, admin);
     public static final Vote vote3 = new Vote(VOTE3_ID, LocalDate.of(2023, Month.MARCH, 6), restaurant1, guest);
 
-    public static final Vote vote4 = new Vote(VOTE4_ID, LocalDate.now(), restaurant2, user);
-    public static final Vote vote5 = new Vote(VOTE5_ID, LocalDate.now(), restaurant2, admin);
-    public static final Vote vote6 = new Vote(VOTE6_ID, LocalDate.now(), restaurant1, guest);
+    public static final Vote vote4 = new Vote(VOTE4_ID, LocalDate.now(), restaurant2, admin);
+    public static final Vote vote5 = new Vote(VOTE5_ID, LocalDate.now(), restaurant1, guest);
 
+    public static Vote getNewAdminVoteNow() {
+        return new Vote(null, LocalDate.now(), restaurant1, admin);
+    }
 }

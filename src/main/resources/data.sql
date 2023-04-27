@@ -19,8 +19,6 @@ VALUES ('USER', 1),
        ('ADMIN', 2),
        ('USER', 2);
 
-
-
 INSERT INTO restaurant(name, address)
 VALUES ('Pizza Palace', '123 Main St'), -- 1
        ('Burger Joint', '456 Oak St'),  -- 2
@@ -33,7 +31,6 @@ VALUES ('2023-03-06', 1), -- 1
        (CURRENT_DATE, 1), -- 4
        (CURRENT_DATE, 2), -- 5
        (CURRENT_DATE, 3); -- 6
-
 
 INSERT INTO dish(name, price, menu_id)
 VALUES ('Pepperoni Pizza', 10.99, 1),          -- 1

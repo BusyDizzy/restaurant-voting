@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,8 +25,9 @@ import java.util.Optional;
 @EnableWebSecurity
 @Slf4j
 @AllArgsConstructor
-public class WebSecurityConfig {
+public class SecurityConfig {
 
+    private final RestAuthenticationEntryPoint authenticationEntryPoint;
     public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final UserRepository userRepository;
 
@@ -45,14 +47,20 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers("/", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**");
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/api/admin/restaurants/**/votes/**").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/admin/restaurants/**/menus/**").authenticated()
-                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/api/profile").hasRole(Role.USER.name())
-                .antMatchers("/api/**").authenticated()
+        http.authorizeHttpRequests()
+                .requestMatchers(HttpMethod.POST, "/api/admin/restaurants/*/votes/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/admin/restaurants/*/menus/**").authenticated()
+                .requestMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/profile").anonymous()
+                .requestMatchers("/api/**").authenticated()
                 .and().httpBasic()
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable();
         return http.build();

@@ -1,12 +1,14 @@
 package com.antontkatch.restaurant.to;
 
 import com.antontkatch.restaurant.HasIdAndEmail;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Value;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.beans.ConstructorProperties;
 import java.io.Serial;
 import java.io.Serializable;
@@ -27,7 +29,6 @@ public class UserTo extends NamedTo implements Serializable, HasIdAndEmail {
 
     @NotBlank
     @Size(min = 5, max = 32, message = "length must be between 5 and 32 characters")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
 
 

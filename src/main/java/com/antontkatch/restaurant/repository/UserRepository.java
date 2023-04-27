@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.antontkatch.restaurant.config.WebSecurityConfig.PASSWORD_ENCODER;
+import static com.antontkatch.restaurant.config.SecurityConfig.PASSWORD_ENCODER;
 
 @Transactional(readOnly = true)
 public interface UserRepository extends BaseRepository<User> {

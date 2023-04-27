@@ -3,13 +3,13 @@ package com.antontkatch.restaurant.web.user;
 import com.antontkatch.restaurant.HasIdAndEmail;
 import com.antontkatch.restaurant.repository.UserRepository;
 import com.antontkatch.restaurant.web.AuthUser;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Component
 @AllArgsConstructor

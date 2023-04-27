@@ -4,10 +4,10 @@ import com.antontkatch.restaurant.model.Vote;
 import com.antontkatch.restaurant.repository.RestaurantRepository;
 import com.antontkatch.restaurant.repository.UserRepository;
 import com.antontkatch.restaurant.repository.VoteRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,6 @@ public class VoteService {
     private final RestaurantRepository restaurantRepository;
 
     private final UserRepository userRepository;
-
 
     @Transactional
     public Vote save(Vote vote, int userId, int restaurantId) {

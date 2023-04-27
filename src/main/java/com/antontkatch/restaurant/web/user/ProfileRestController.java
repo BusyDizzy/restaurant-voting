@@ -4,6 +4,7 @@ import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.to.UserTo;
 import com.antontkatch.restaurant.util.UsersUtil;
 import com.antontkatch.restaurant.web.AuthUser;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 
 import static com.antontkatch.restaurant.util.validation.ValidationUtil.assureIdConsistent;

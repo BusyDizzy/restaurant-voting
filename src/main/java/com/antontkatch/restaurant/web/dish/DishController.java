@@ -43,8 +43,8 @@ public class DishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> create(@RequestBody Dish dish, @PathVariable int menuId) {
-        String URL = RestaurantController.REST_URL + "/" + menuId + "/menus";
+    public ResponseEntity<Dish> create(@RequestBody Dish dish, @PathVariable int restaurantId, @PathVariable int menuId) {
+        String URL = RestaurantController.REST_URL + restaurantId + "/menus/" + menuId + "/dishes";
         log.info("create dish {} of menu {}", dish, menuId);
         checkNew(dish);
         Dish created = service.save(dish, menuId);
