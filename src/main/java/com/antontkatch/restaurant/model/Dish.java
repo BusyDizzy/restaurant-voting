@@ -16,7 +16,8 @@ public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
     @Range(min = 0, max = 10000)
-    private double price;
+    @NotNull
+    private Double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
@@ -27,16 +28,16 @@ public class Dish extends AbstractNamedEntity {
     public Dish() {
     }
 
-    public Dish(String dishName, double price) {
+    public Dish(String dishName, Double price) {
         this(null, dishName, price);
     }
 
-    public Dish(Integer id, String name, double price) {
+    public Dish(Integer id, String name, Double price) {
         super(id, name);
         this.price = price;
     }
 
-    public Dish(Integer id, String name, double price, Menu menu) {
+    public Dish(Integer id, String name, Double price, Menu menu) {
         super(id, name);
         this.price = price;
         this.menu = menu;

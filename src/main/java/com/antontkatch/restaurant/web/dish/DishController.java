@@ -2,8 +2,10 @@ package com.antontkatch.restaurant.web.dish;
 
 import com.antontkatch.restaurant.model.Dish;
 import com.antontkatch.restaurant.service.DishService;
+import com.antontkatch.restaurant.to.DishTo;
 import com.antontkatch.restaurant.web.menu.MenuController;
 import com.antontkatch.restaurant.web.restaurant.RestaurantController;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +45,11 @@ public class DishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> create(@RequestBody Dish dish, @PathVariable int restaurantId, @PathVariable int menuId) {
+    public ResponseEntity<Dish> create(@Valid @RequestBody DishTo dishTo, @PathVariable int restaurantId, @PathVariable int menuId) {
         String URL = RestaurantController.REST_URL + restaurantId + "/menus/" + menuId + "/dishes";
-        log.info("create dish {} of menu {}", dish, menuId);
-        checkNew(dish);
-        Dish created = service.save(dish, menuId);
+        log.info("create dish {} of menu {}", dishTo, menuId);
+        checkNew(dishTo);
+        Dish created = service.save(service.convertDishToDish(dishTo), menuId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -63,9 +65,9 @@ public class DishController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Dish dish, @PathVariable int menuId, @PathVariable int id) {
-        log.info("update dish {} with menu id={}", dish, menuId);
-        assureIdConsistent(dish, id);
-        service.save(dish, menuId);
+    public void update(@Valid @RequestBody DishTo dishTo, @PathVariable int menuId, @PathVariable int id) {
+        log.info("update dish {} with menu id={}", dishTo, menuId);
+        assureIdConsistent(dishTo, id);
+        service.save(service.convertDishToDish(dishTo), menuId);
     }
 }

@@ -1,6 +1,7 @@
 package com.antontkatch.restaurant.model;
 
 import com.antontkatch.restaurant.HasIdAndEmail;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -63,6 +64,7 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializ
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OnDelete(action = OnDeleteAction.CASCADE)
 //    @JsonManagedReference(value = "user-votes")
+    @JsonIgnore
     private List<Vote> votes;
 
     public User(User u) {

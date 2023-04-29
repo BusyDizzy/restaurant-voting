@@ -87,6 +87,7 @@ public class MenuRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenu)))
+                .andDo(print())
                 .andExpect(status().isCreated());
 
         Menu created = MENU_MATCHER.readFromJson(action);

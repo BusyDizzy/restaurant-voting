@@ -32,6 +32,15 @@ public class RestaurantRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant1, restaurant2, restaurant3, restaurant4));
+    }
+
+    @Test
+    void getAllWithTodayMenu() throws Exception {
+        perform(MockMvcRequestBuilders.get(RestaurantController.REST_URL + "/with-today-menu")
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(RESTAURANT_MATCHER.contentJson(restaurant1, restaurant2, restaurant3));
     }
 

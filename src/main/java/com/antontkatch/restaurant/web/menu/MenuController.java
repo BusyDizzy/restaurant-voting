@@ -2,7 +2,9 @@ package com.antontkatch.restaurant.web.menu;
 
 import com.antontkatch.restaurant.model.Menu;
 import com.antontkatch.restaurant.service.MenuService;
+import com.antontkatch.restaurant.to.MenuTo;
 import com.antontkatch.restaurant.web.restaurant.RestaurantController;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,11 +53,11 @@ public class MenuController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Menu> create(@RequestBody Menu menu, @PathVariable int restaurantId) {
+    public ResponseEntity<Menu> create(@Valid @RequestBody MenuTo menuTo, @PathVariable int restaurantId) {
         String URL = RestaurantController.REST_URL + "/" + restaurantId + "/menus";
-        log.info("create {} of restaurant {}", menu, restaurantId);
-        checkNew(menu);
-        Menu created = service.save(menu, restaurantId);
+        log.info("create {} of restaurant {}", menuTo, restaurantId);
+        checkNew(menuTo);
+        Menu created = service.save(service.convertMenuToMenu(menuTo), restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -71,9 +73,9 @@ public class MenuController {
 
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Menu menu, @PathVariable int restaurantId, @PathVariable int menuId) {
-        log.info("update {} with restaurant id={}", menu, restaurantId);
-        assureIdConsistent(menu, menuId);
-        service.save(menu, restaurantId);
+    public void update(@Valid @RequestBody MenuTo menuTo, @PathVariable int restaurantId, @PathVariable int menuId) {
+        log.info("update {} with restaurant id={}", menuTo, restaurantId);
+        assureIdConsistent(menuTo, menuId);
+        service.save(service.convertMenuToMenu(menuTo), restaurantId);
     }
 }

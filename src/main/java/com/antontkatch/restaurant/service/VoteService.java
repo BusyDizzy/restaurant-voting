@@ -4,8 +4,10 @@ import com.antontkatch.restaurant.model.Vote;
 import com.antontkatch.restaurant.repository.RestaurantRepository;
 import com.antontkatch.restaurant.repository.UserRepository;
 import com.antontkatch.restaurant.repository.VoteRepository;
+import com.antontkatch.restaurant.to.VoteTo;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.Optional;
 @AllArgsConstructor
 @Service
 public class VoteService {
+
+    private final ModelMapper modelMapper;
 
     private final VoteRepository voteRepository;
 
@@ -42,5 +46,9 @@ public class VoteService {
 
     public Optional<Vote> getTodayVoteIfExists(int userId) {
         return voteRepository.getTodayVoteIfExists(userId);
+    }
+
+    public Vote convertVoteToVote(VoteTo voteTo) {
+        return modelMapper.map(voteTo, Vote.class);
     }
 }

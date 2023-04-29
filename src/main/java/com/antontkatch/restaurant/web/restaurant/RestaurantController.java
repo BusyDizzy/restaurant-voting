@@ -2,6 +2,7 @@ package com.antontkatch.restaurant.web.restaurant;
 
 import com.antontkatch.restaurant.model.Restaurant;
 import com.antontkatch.restaurant.repository.RestaurantRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class RestaurantController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant) {
+    public ResponseEntity<Restaurant> create(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
         Restaurant created = repository.save(restaurant);
@@ -48,6 +49,12 @@ public class RestaurantController {
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    @GetMapping("with-today-menu")
+    public List<Restaurant> getAllWithTodayMenu() {
+        log.info("getAll with Today's Menu");
+        return repository.findAllWithTodayMenu();
     }
 
     @DeleteMapping("/{id}")
@@ -59,7 +66,7 @@ public class RestaurantController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody Restaurant restaurant, @PathVariable int id) {
+    public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         assureIdConsistent(restaurant, id);
         repository.save(restaurant);

@@ -16,11 +16,15 @@ public class RestaurantTestData {
 
     public static final int RESTAURANT3_ID = 3;
 
+    public static final int RESTAURANT4_ID = 4;
+
     public static final Restaurant restaurant1 = new Restaurant(RESTAURANT1_ID, "Pizza Palace", "123 Main St");
 
     public static final Restaurant restaurant2 = new Restaurant(RESTAURANT2_ID, "Burger Joint", "456 Oak St");
 
     public static final Restaurant restaurant3 = new Restaurant(RESTAURANT3_ID, "Sushi Spot", "789 Maple Ave");
+
+    public static final Restaurant restaurant4 = new Restaurant(RESTAURANT4_ID, "Thai Local Food", "Moo 39/30");
 
     public static final List<Restaurant> restaurants = List.of(restaurant1, restaurant2, restaurant3);
 

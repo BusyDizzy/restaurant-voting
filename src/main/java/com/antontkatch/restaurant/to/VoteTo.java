@@ -1,12 +1,14 @@
 package com.antontkatch.restaurant.to;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -15,11 +17,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class VoteTo extends BaseTo {
 
-    @DateTimeFormat
-    LocalDateTime localDateTime;
+    @NotNull
+    private LocalDate date;
+
+    @NotNull
+    private LocalTime time;
 
     public VoteTo(Integer id, LocalDateTime localDateTime) {
         super(id);
-        this.localDateTime = localDateTime;
+        this.date = localDateTime.toLocalDate();
+        this.time = localDateTime.toLocalTime();
     }
 }
