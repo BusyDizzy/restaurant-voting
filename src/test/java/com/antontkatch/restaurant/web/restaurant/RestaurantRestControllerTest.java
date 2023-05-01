@@ -91,4 +91,16 @@ public class RestaurantRestControllerTest extends AbstractControllerTest {
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
         RESTAURANT_MATCHER.assertMatch(repository.getExisted(newId), newRestaurant);
     }
+
+    @Test
+    void createDuplicate() throws Exception {
+        Restaurant newRestaurant = getNew();
+        newRestaurant.setName("Thai Local Food");
+        perform(MockMvcRequestBuilders.post(RestaurantController.REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newRestaurant)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
 }

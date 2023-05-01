@@ -1,7 +1,6 @@
 package com.antontkatch.restaurant.model;
 
 import com.antontkatch.restaurant.HasId;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,13 +22,12 @@ public abstract class AbstractBaseEntity implements Persistable<Integer>, HasId 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY) // https://stackoverflow.com/a/28025008/548473
     protected Integer id;
 
-    @JsonIgnore
-    @Override
     public int id() {
         Assert.notNull(id, "Entity must have id");
         return id;
     }
 
+    @Override
     public boolean isNew() {
         return this.id == null;
     }

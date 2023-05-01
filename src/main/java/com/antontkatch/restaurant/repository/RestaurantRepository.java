@@ -12,7 +12,7 @@ import java.util.List;
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
     @EntityGraph(attributePaths = {"menus"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("SELECT r FROM Restaurant r LEFT JOIN Menu m on r.id= m.restaurant.id WHERE m.date = CURRENT_DATE")
-    @Cacheable("restaurant")
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH Menu m on r.id= m.restaurant.id WHERE m.date = CURRENT_DATE")
+    @Cacheable("restaurants")
     List<Restaurant> findAllWithTodayMenu();
 }

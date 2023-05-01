@@ -4,8 +4,11 @@ import com.antontkatch.restaurant.model.User;
 import com.antontkatch.restaurant.to.UserTo;
 import com.antontkatch.restaurant.util.UsersUtil;
 import com.antontkatch.restaurant.web.AuthUser;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 @RestController
 @RequestMapping(value = ProfileRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@Tag(name = "Profile Controller")
 public class ProfileRestController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
@@ -34,6 +38,7 @@ public class ProfileRestController extends AbstractUserController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "users", key = "#authUser.username")
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         super.delete(authUser.id());
     }
@@ -52,6 +57,7 @@ public class ProfileRestController extends AbstractUserController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CachePut(value = "users", key = "#authUser.username")
     public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
         log.info("update {} with id={}", userTo, authUser.id());
         assureIdConsistent(userTo, authUser.id());

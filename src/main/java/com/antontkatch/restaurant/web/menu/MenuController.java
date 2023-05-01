@@ -4,9 +4,11 @@ import com.antontkatch.restaurant.model.Menu;
 import com.antontkatch.restaurant.service.MenuService;
 import com.antontkatch.restaurant.to.MenuTo;
 import com.antontkatch.restaurant.web.restaurant.RestaurantController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 import static com.antontkatch.restaurant.util.validation.ValidationUtil.assureIdConsistent;
 import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew;
 
+@Tag(name = "Menu Controller")
 @RestController
 @RequestMapping(value = MenuController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -53,6 +56,7 @@ public class MenuController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(value = "menu", allEntries = true)
     public ResponseEntity<Menu> create(@Valid @RequestBody MenuTo menuTo, @PathVariable int restaurantId) {
         String URL = RestaurantController.REST_URL + "/" + restaurantId + "/menus";
         log.info("create {} of restaurant {}", menuTo, restaurantId);
@@ -66,6 +70,7 @@ public class MenuController {
 
     @DeleteMapping("/{menuId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "menu", allEntries = true)
     public void delete(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("delete menu {} of restaurant {}", menuId, restaurantId);
         service.delete(menuId, restaurantId);
@@ -73,6 +78,7 @@ public class MenuController {
 
     @PutMapping(value = "/{menuId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(value = "menu", allEntries = true)
     public void update(@Valid @RequestBody MenuTo menuTo, @PathVariable int restaurantId, @PathVariable int menuId) {
         log.info("update {} with restaurant id={}", menuTo, restaurantId);
         assureIdConsistent(menuTo, menuId);

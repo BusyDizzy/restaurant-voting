@@ -7,7 +7,6 @@ import com.antontkatch.restaurant.repository.RestaurantRepository;
 import com.antontkatch.restaurant.to.MenuTo;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -34,14 +33,14 @@ public class MenuService {
     public Menu getWithDishes(int id, int restaurantId) {
         Menu menu = menuRepository.getExisted(id, restaurantId);
         Assert.notNull(menu, "menu must not be null");
-        menu.setDishes(dishRepository.getAll(id)); // Null Pointer fix needed!
+        menu.setDishes(dishRepository.getAll(id));
         return menu;
     }
 
     public Menu getTodayMenu(int restaurantId) {
         Menu menu = menuRepository.getCurrent(restaurantId);
         Assert.notNull(menu, "menu must not be null");
-        menu.setDishes(dishRepository.getAll(menu.getId())); // NullPointer Exception is possible!
+        menu.setDishes(dishRepository.getAll(menu.getId()));
         return menu;
     }
 
@@ -55,7 +54,6 @@ public class MenuService {
 
 
     @Transactional
-    @CacheEvict(value = "menu", allEntries = true)
     public Menu save(Menu menu, int restaurantId) {
         Assert.notNull(menu, "menu must not be null");
         if (!menu.isNew() && menuRepository.getExisted(menu.id(), restaurantId) == null) {

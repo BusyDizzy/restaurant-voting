@@ -1,5 +1,6 @@
 package com.antontkatch.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,12 +32,8 @@ public class Vote extends AbstractBaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
 //    @JsonBackReference(value = "user-votes")
+    @JsonIgnore
     private User user;
-
-    public Vote(Integer id, LocalDate date) {
-        super(id);
-        this.date = date;
-    }
 
     public Vote(Integer id, LocalDate date, Restaurant restaurant, User user) {
         super(id);

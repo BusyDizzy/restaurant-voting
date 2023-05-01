@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static com.antontkatch.restaurant.RestaurantTestData.restaurant1;
@@ -33,7 +32,7 @@ public class VoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createVote() throws Exception {
-        VoteTo newVoteTo = new VoteTo(null, LocalDateTime.now());
+        VoteTo newVoteTo = new VoteTo();
 
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + restaurant1.getId() + "/votes")
                 .with(userHttpBasic(user))
@@ -52,7 +51,9 @@ public class VoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void voteUpdateBeforeTime() throws Exception {
-        VoteTo newVoteTo = new VoteTo(null, LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 59)));
+        VoteTo newVoteTo = new VoteTo();
+        newVoteTo.setDate(LocalDate.now());
+        newVoteTo.setTime(LocalTime.of(10, 59));
 
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + restaurant1.getId() + "/votes")
                 .with(userHttpBasic(admin))
@@ -71,7 +72,9 @@ public class VoteRestControllerTest extends AbstractControllerTest {
 
     @Test
     void voteUpdateAfterTime() throws Exception {
-        VoteTo newVoteTo = new VoteTo(null, LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 1)));
+        VoteTo newVoteTo = new VoteTo();
+        newVoteTo.setDate(LocalDate.now());
+        newVoteTo.setTime(LocalTime.of(11, 1));
 
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + restaurant1.getId() + "/votes")
                 .with(userHttpBasic(admin))

@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Range;
 
 
 @Entity
-@Table(name = "dish")
+@Table(name = "dish", uniqueConstraints = {@UniqueConstraint(columnNames = {"menu_id", "name", "price"}, name = "dish_unique_menu_id_name_price_idx")})
 @Getter
 @Setter
 public class Dish extends AbstractNamedEntity {

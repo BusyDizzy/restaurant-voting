@@ -2,6 +2,7 @@ package com.antontkatch.restaurant.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -28,7 +29,7 @@ public class Restaurant extends AbstractNamedEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonManagedReference(value = "restaurant-menu")
+    @JsonManagedReference(value = "restaurant-menu")
     private List<Menu> menus;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")

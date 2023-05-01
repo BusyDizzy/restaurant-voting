@@ -3,6 +3,7 @@ package com.antontkatch.restaurant.model;
 import com.antontkatch.restaurant.HasIdAndEmail;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,8 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.*;
+
+import static io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY;
 
 @Entity
 @Table(name = "users")
@@ -65,6 +68,7 @@ public class User extends AbstractNamedEntity implements HasIdAndEmail, Serializ
     @OnDelete(action = OnDeleteAction.CASCADE)
 //    @JsonManagedReference(value = "user-votes")
     @JsonIgnore
+    @Schema(accessMode = READ_ONLY)
     private List<Vote> votes;
 
     public User(User u) {

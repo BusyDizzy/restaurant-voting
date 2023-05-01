@@ -2,8 +2,10 @@ package com.antontkatch.restaurant.web.user;
 
 
 import com.antontkatch.restaurant.model.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 @RestController
 @RequestMapping(value = AdminRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@Tag(name = "Admin Controller")
 public class AdminRestController extends AbstractUserController {
 
 
@@ -46,6 +49,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(value = "users", allEntries = true)
     public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
         log.info("create {}", user);
         checkNew(user);

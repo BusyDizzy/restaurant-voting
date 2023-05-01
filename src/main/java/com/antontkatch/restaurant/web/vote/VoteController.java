@@ -5,6 +5,7 @@ import com.antontkatch.restaurant.service.VoteService;
 import com.antontkatch.restaurant.to.VoteTo;
 import com.antontkatch.restaurant.web.AuthUser;
 import com.antontkatch.restaurant.web.restaurant.RestaurantController;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static com.antontkatch.restaurant.util.VoteUtil.validateVoteTime;
 
+@Tag(name = "Vote Controller")
 @RestController
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -33,13 +35,6 @@ public class VoteController {
     @GetMapping("votes")
     public List<Vote> getAllTodayVotes() {
         return service.getAllTodayVotes();
-    }
-
-    @GetMapping("votes/{voteId}")
-    public Vote get(@PathVariable int voteId, @AuthenticationPrincipal AuthUser authUser) {
-        int userId = authUser.getUser().id();
-        log.info("get vote {} of user id{}", voteId, userId);
-        return service.get(voteId, userId);
     }
 
     @PostMapping(value = "{restaurantId}/votes", consumes = MediaType.APPLICATION_JSON_VALUE)

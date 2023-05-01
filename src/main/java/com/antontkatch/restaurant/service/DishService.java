@@ -6,7 +6,6 @@ import com.antontkatch.restaurant.repository.MenuRepository;
 import com.antontkatch.restaurant.to.DishTo;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -38,7 +37,6 @@ public class DishService {
 
 
     @Transactional
-    @CacheEvict(value = "dish", allEntries = true)
     public Dish save(Dish dish, int menuId) {
         Assert.notNull(dish, "dish must not be null");
         if (!dish.isNew() && get(dish.id(), menuId) == null) {

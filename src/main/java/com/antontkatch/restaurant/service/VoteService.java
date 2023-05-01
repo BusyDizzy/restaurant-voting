@@ -32,7 +32,7 @@ public class VoteService {
         }
 
         vote.setUser(userRepository.getReferenceById(userId));
-        vote.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        vote.setRestaurant(restaurantRepository.getExisted(restaurantId));
         return voteRepository.save(vote);
     }
 

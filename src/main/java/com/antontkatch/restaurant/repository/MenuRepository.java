@@ -2,7 +2,6 @@ package com.antontkatch.restaurant.repository;
 
 import com.antontkatch.restaurant.error.NotFoundException;
 import com.antontkatch.restaurant.model.Menu;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,13 +16,13 @@ public interface MenuRepository extends BaseRepository<Menu> {
     @Transactional
     @Modifying
     @Query("DELETE FROM Menu m WHERE m.id=:id AND m.restaurant.id=:restaurantId")
-    @CacheEvict(value = "menu", allEntries = true)
     int delete(@Param("id") int id, @Param("restaurantId") int restaurantId);
 
-    @Cacheable("menu")
+    @Cacheable("menus")
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId")
     List<Menu> getAll(@Param("restaurantId") int restaurantId);
 
+    @Cacheable("menu")
     @Query(value = "SELECT * FROM menu WHERE restaurant_id=:restaurantId and date_added = CURRENT_DATE", nativeQuery = true)
     Menu getCurrent(@Param("restaurantId") int restaurantId);
 
