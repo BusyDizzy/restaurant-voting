@@ -1,7 +1,7 @@
 package com.antontkatch.restaurant.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,13 +28,16 @@ public class Menu extends AbstractBaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonManagedReference(value = "menu-dishes")
+//    @JsonManagedReference(value = "menu-dishes")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<Dish> dishes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
-    @JsonBackReference(value = "restaurant-menu")
+//    @JsonBackReference(value = "restaurant-menu")
+    @JsonIgnore
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Restaurant restaurant;
 
     public Menu(Integer id, LocalDate date) {

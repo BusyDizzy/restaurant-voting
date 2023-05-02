@@ -5,7 +5,6 @@ import com.antontkatch.restaurant.service.VoteService;
 import com.antontkatch.restaurant.to.VoteTo;
 import com.antontkatch.restaurant.util.JsonUtil;
 import com.antontkatch.restaurant.web.AbstractControllerTest;
-import com.antontkatch.restaurant.web.restaurant.RestaurantController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class VoteRestControllerTest extends AbstractControllerTest {
 
-    private static final String REST_URL = RestaurantController.REST_URL + '/';
+    private static final String REST_URL = VoteController.REST_URL;
 
     @Autowired
     private VoteService service;
@@ -34,7 +33,7 @@ public class VoteRestControllerTest extends AbstractControllerTest {
     void createVote() throws Exception {
         VoteTo newVoteTo = new VoteTo();
 
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + restaurant1.getId() + "/votes")
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "?restaurantId=" + restaurant1.getId())
                 .with(userHttpBasic(user))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newVoteTo)))
@@ -55,7 +54,7 @@ public class VoteRestControllerTest extends AbstractControllerTest {
         newVoteTo.setDate(LocalDate.now());
         newVoteTo.setTime(LocalTime.of(10, 59));
 
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + restaurant1.getId() + "/votes")
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "?restaurantId=" + restaurant1.getId())
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newVoteTo)))
@@ -76,7 +75,7 @@ public class VoteRestControllerTest extends AbstractControllerTest {
         newVoteTo.setDate(LocalDate.now());
         newVoteTo.setTime(LocalTime.of(11, 1));
 
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + restaurant1.getId() + "/votes")
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "?restaurantId=" + restaurant1.getId())
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newVoteTo)))

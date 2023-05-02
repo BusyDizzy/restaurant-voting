@@ -1,7 +1,8 @@
 package com.antontkatch.restaurant.web.restaurant;
 
 import com.antontkatch.restaurant.model.Restaurant;
-import com.antontkatch.restaurant.repository.RestaurantRepository;
+import com.antontkatch.restaurant.service.RestaurantService;
+import com.antontkatch.restaurant.to.RestaurantTo;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -28,18 +29,18 @@ public class RestaurantController {
     public static final String REST_URL = "/api/admin/restaurants";
 
     @Autowired
-    private RestaurantRepository repository;
+    private RestaurantService service;
 
     @GetMapping
     public List<Restaurant> getAll() {
         log.info("getAll");
-        return repository.findAll();
+        return service.getAll();
     }
 
     @GetMapping("/{id}")
     public Restaurant get(@PathVariable int id) {
         log.info("get {}", id);
-        return repository.getExisted(id);
+        return service.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +48,7 @@ public class RestaurantController {
     public ResponseEntity<Restaurant> create(@Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
         checkNew(restaurant);
-        Restaurant created = repository.save(restaurant);
+        Restaurant created = service.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -55,9 +56,9 @@ public class RestaurantController {
     }
 
     @GetMapping("with-today-menu")
-    public List<Restaurant> getAllWithTodayMenu() {
+    public List<RestaurantTo> getAllWithTodayMenu() {
         log.info("getAll restaurants with today's menu");
-        return repository.findAllWithTodayMenu();
+        return service.findAllWithTodayMenu();
     }
 
     @DeleteMapping("/{id}")
@@ -65,7 +66,7 @@ public class RestaurantController {
     @CacheEvict(value = "restaurants", allEntries = true)
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
-        repository.delete(id);
+        service.delete(id);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -74,6 +75,6 @@ public class RestaurantController {
     public void update(@Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} with id={}", restaurant, id);
         assureIdConsistent(restaurant, id);
-        repository.save(restaurant);
+        service.save(restaurant);
     }
 }

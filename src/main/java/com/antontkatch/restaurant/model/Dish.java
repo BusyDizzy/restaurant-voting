@@ -1,6 +1,7 @@
 package com.antontkatch.restaurant.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -22,7 +23,9 @@ public class Dish extends AbstractNamedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     @NotNull
-    @JsonBackReference(value = "menu-dishes")
+//    @JsonBackReference(value = "menu-dishes")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    @JsonIgnore
     private Menu menu;
 
     public Dish() {

@@ -1,6 +1,7 @@
 package com.antontkatch.restaurant.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class Vote extends AbstractBaseEntity {
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
 //    @JsonBackReference(value = "restaurant-votes")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,6 +35,7 @@ public class Vote extends AbstractBaseEntity {
     @NotNull
 //    @JsonBackReference(value = "user-votes")
     @JsonIgnore
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private User user;
 
     public Vote(Integer id, LocalDate date, Restaurant restaurant, User user) {

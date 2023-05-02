@@ -4,7 +4,6 @@ import com.antontkatch.restaurant.model.Vote;
 import com.antontkatch.restaurant.service.VoteService;
 import com.antontkatch.restaurant.to.VoteTo;
 import com.antontkatch.restaurant.web.AuthUser;
-import com.antontkatch.restaurant.web.restaurant.RestaurantController;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -27,29 +26,28 @@ import static com.antontkatch.restaurant.util.VoteUtil.validateVoteTime;
 @Slf4j
 public class VoteController {
 
-    public static final String REST_URL = RestaurantController.REST_URL + "/";
+    public static final String REST_URL = "/api/users/votes";
 
     @Autowired
     private VoteService service;
 
-    @GetMapping("votes")
+    @GetMapping()
     public List<Vote> getAllTodayVotes() {
         return service.getAllTodayVotes();
     }
 
-    @PostMapping(value = "{restaurantId}/votes", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> createOrUpdate(@Valid @RequestBody VoteTo voteTo, @PathVariable int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Vote> createOrUpdate(@Valid @RequestBody VoteTo voteTo, @RequestParam int restaurantId, @AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.getUser().id();
         Optional<Vote> voteDb = service.getTodayVoteIfExists(userId);
         Vote newVote;
         if (voteDb.isPresent() && validateVoteTime(voteTo)) {
             return ResponseEntity.ok(voteDb.get());
         } else newVote = voteDb.orElseGet(() -> service.convertVoteToVote(voteTo));
-        String URL = RestaurantController.REST_URL + "/" + restaurantId + "/votes";
         log.info("create {}", newVote);
         Vote created = service.save(newVote, userId, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(URL + "/{id}")
+                .path(REST_URL + "/{id}")
                 .buildAndExpand(newVote.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
