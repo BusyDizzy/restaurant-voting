@@ -18,6 +18,12 @@ public interface MenuRepository extends BaseRepository<Menu> {
     @Query("DELETE FROM Menu m WHERE m.id=:id AND m.restaurant.id=:restaurantId")
     int delete(@Param("id") int id, @Param("restaurantId") int restaurantId);
 
+    default void deleteExisted(int id, int restaurantId) {
+        if (delete(id, restaurantId) == 0) {
+            throw new NotFoundException("Entity with id=" + id + " not found");
+        }
+    }
+
     @Cacheable("menus")
     @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurantId")
     List<Menu> getAll(@Param("restaurantId") int restaurantId);

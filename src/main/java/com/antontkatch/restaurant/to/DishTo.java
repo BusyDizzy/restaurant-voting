@@ -15,9 +15,9 @@ public class DishTo extends NamedTo {
 
     @NotNull
     @Range(min = 1, max = 10000)
-    Double price;
+    Integer price;
 
-    public DishTo(Integer id, String name, Double price) {
+    public DishTo(Integer id, String name, Integer price) {
         super(id, name);
         this.price = price;
     }

@@ -12,8 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
+
+import static com.antontkatch.restaurant.MenuTestData.getNew;
+import static com.antontkatch.restaurant.MenuTestData.getUpdated;
 import static com.antontkatch.restaurant.MenuTestData.*;
-import static com.antontkatch.restaurant.RestaurantTestData.RESTAURANT1_ID;
+import static com.antontkatch.restaurant.RestaurantTestData.NOT_FOUND;
+import static com.antontkatch.restaurant.RestaurantTestData.*;
 import static com.antontkatch.restaurant.TestUtil.userHttpBasic;
 import static com.antontkatch.restaurant.UserTestData.admin;
 import static com.antontkatch.restaurant.UserTestData.user;
@@ -69,15 +74,50 @@ public class MenuRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + "/" + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void update() throws Exception {
         Menu updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + "/" + RESTAURANT1_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + MENU1_ID)
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
         MENU_MATCHER.assertMatch(service.get(MENU1_ID, RESTAURANT1_ID), updated);
+    }
+
+    @Test
+    void updateInvalidMenuId() throws Exception {
+        Menu updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + MENU2_ID)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void getUnauth() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + "/" + MENU1_ID))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void postUnauth() throws Exception {
+        Menu newMenu = getNew();
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(user))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMenu)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -95,5 +135,39 @@ public class MenuRestControllerTest extends AbstractControllerTest {
         newMenu.setId(newId);
         MENU_MATCHER.assertMatch(created, newMenu);
         MENU_MATCHER.assertMatch(service.get(newId, RESTAURANT1_ID), newMenu);
+    }
+
+    @Test
+    void createDuplicate() throws Exception {
+        Menu newMenu = new Menu(null, LocalDate.now(), restaurant1);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMenu)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void createInvalid() throws Exception {
+        Menu newMenu = new Menu((Integer) null, null, null);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newMenu)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void updateInvalid() throws Exception {
+        Menu updated = getUpdated();
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + RESTAURANT1_ID)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isNoContent());
+
+        MENU_MATCHER.assertMatch(service.get(MENU1_ID, RESTAURANT1_ID), updated);
     }
 }

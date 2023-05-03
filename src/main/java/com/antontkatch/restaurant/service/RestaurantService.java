@@ -51,7 +51,7 @@ public class RestaurantService {
     }
 
     public void delete(int id) {
-        restaurantRepository.delete(id);
+        restaurantRepository.deleteExisted(id);
     }
 
     public Restaurant save(Restaurant restaurant) {

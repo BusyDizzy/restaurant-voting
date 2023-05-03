@@ -64,7 +64,7 @@ public class RestaurantRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createUnauth() throws Exception {
+    void postUnauth() throws Exception {
         Restaurant newRestaurant = getNew();
         perform(MockMvcRequestBuilders.post(RestaurantController.REST_URL)
                 .with(userHttpBasic(user))
@@ -80,6 +80,14 @@ public class RestaurantRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertThrows(NotFoundException.class, () -> service.get(RESTAURANT1_ID));
+    }
+
+    @Test
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL + NOT_FOUND)
+                .with(userHttpBasic(admin)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -140,9 +148,7 @@ public class RestaurantRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRestaurant)))
-                .andExpect(status().isUnprocessableEntity())
-                .andDo(print());
-//                .andExpect(errorType(BAD_DATA));
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

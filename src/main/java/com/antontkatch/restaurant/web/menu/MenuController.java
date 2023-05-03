@@ -27,7 +27,7 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 @Slf4j
 public class MenuController {
 
-    public static final String REST_URL = RestaurantController.REST_URL + "/" + "{restaurantId}/menus";
+    public static final String REST_URL = RestaurantController.REST_URL + "/{restaurantId}/menus";
     @Autowired
     private MenuService service;
 

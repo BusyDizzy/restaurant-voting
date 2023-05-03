@@ -31,8 +31,8 @@ public class DishService {
         return dishRepository.getAll(menuId);
     }
 
-    public boolean delete(int id, int menuId) {
-        return dishRepository.delete(id, menuId) != 0;
+    public void delete(int id, int menuId) {
+        dishRepository.deleteExisted(id, menuId);
     }
 
 

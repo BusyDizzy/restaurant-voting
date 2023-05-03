@@ -16,9 +16,9 @@ import org.hibernate.validator.constraints.Range;
 public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
-    @Range(min = 0, max = 10000)
+    @Range(min = 1, max = 10000)
     @NotNull
-    private Double price;
+    private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
@@ -31,16 +31,16 @@ public class Dish extends AbstractNamedEntity {
     public Dish() {
     }
 
-    public Dish(String dishName, Double price) {
+    public Dish(String dishName, Integer price) {
         this(null, dishName, price);
     }
 
-    public Dish(Integer id, String name, Double price) {
+    public Dish(Integer id, String name, Integer price) {
         super(id, name);
         this.price = price;
     }
 
-    public Dish(Integer id, String name, Double price, Menu menu) {
+    public Dish(Integer id, String name, Integer price, Menu menu) {
         super(id, name);
         this.price = price;
         this.menu = menu;

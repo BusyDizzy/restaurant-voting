@@ -44,8 +44,8 @@ public class MenuService {
         return menu;
     }
 
-    public boolean delete(int id, int restaurantId) {
-        return menuRepository.delete(id, restaurantId) != 0;
+    public void delete(int id, int restaurantId) {
+        menuRepository.deleteExisted(id, restaurantId);
     }
 
     public List<Menu> getAll(int restaurantId) {

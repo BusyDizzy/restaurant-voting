@@ -22,6 +22,12 @@ public interface DishRepository extends BaseRepository<Dish> {
     @Query("SELECT d FROM Dish d WHERE d.menu.id=:menuId")
     List<Dish> getAll(@Param("menuId") int menuId);
 
+    default void deleteExisted(int id, int menuId) {
+        if (delete(id, menuId) == 0) {
+            throw new NotFoundException("Entity with id=" + id + " not found");
+        }
+    }
+
     default Dish getExisted(int id, int menuId) {
         return findById(id)
                 .filter(dish -> dish.getMenu().getId() == menuId)

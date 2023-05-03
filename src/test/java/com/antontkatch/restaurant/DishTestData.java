@@ -35,26 +35,26 @@ public class DishTestData {
     public static final int DISH12_ID = 12;
 
 
-    public static final Dish dish1 = new Dish(DISH1_ID, "Pepperoni Pizza", 10.99, menu1);
-    public static final Dish dish2 = new Dish(DISH2_ID, "Coca Cola", 2.99, menu1);
-    public static final Dish dish3 = new Dish(DISH3_ID, "Cheeseburger", 8.99, menu1);
-    public static final Dish dish4 = new Dish(DISH4_ID, "Bacon Cheeseburger", 9.99, menu2);
-    public static final Dish dish5 = new Dish(DISH5_ID, "California Roll", 11.99, menu2);
-    public static final Dish dish6 = new Dish(DISH6_ID, "Spicy Tuna Roll", 12.99, menu3);
+    public static final Dish dish1 = new Dish(DISH1_ID, "Pepperoni Pizza", 10, menu1);
+    public static final Dish dish2 = new Dish(DISH2_ID, "Coca Cola", 3, menu1);
+    public static final Dish dish3 = new Dish(DISH3_ID, "Cheeseburger", 9, menu1);
+    public static final Dish dish4 = new Dish(DISH4_ID, "Bacon Cheeseburger", 10, menu2);
+    public static final Dish dish5 = new Dish(DISH5_ID, "California Roll", 12, menu2);
+    public static final Dish dish6 = new Dish(DISH6_ID, "Spicy Tuna Roll", 13, menu3);
 
-    public static final Dish dish7 = new Dish(DISH7_ID, "Margarita Pizza", 9.99, menu4);
-    public static final Dish dish8 = new Dish(DISH8_ID, "Pepsi Cola", 2.98, menu4);
-    public static final Dish dish9 = new Dish(DISH9_ID, "Green Salad", 4.99, menu4);
-    public static final Dish dish10 = new Dish(DISH10_ID, "Beyond Meat Cheeseburger", 15.99, menu5);
-    public static final Dish dish11 = new Dish(DISH11_ID, "Crispy Fried Roll", 14.99, menu5);
-    public static final Dish dish12 = new Dish(DISH12_ID, "Spicy Tuna Roll", 12.99, menu6);
+    public static final Dish dish7 = new Dish(DISH7_ID, "Margarita Pizza", 10, menu4);
+    public static final Dish dish8 = new Dish(DISH8_ID, "Pepsi Cola", 3, menu4);
+    public static final Dish dish9 = new Dish(DISH9_ID, "Green Salad", 5, menu4);
+    public static final Dish dish10 = new Dish(DISH10_ID, "Beyond Meat Cheeseburger", 16, menu5);
+    public static final Dish dish11 = new Dish(DISH11_ID, "Crispy Fried Roll", 15, menu5);
+    public static final Dish dish12 = new Dish(DISH12_ID, "Spicy Tuna Roll", 13, menu6);
 
     public static Dish getNew() {
-        return new Dish(null, "Anti Pasta", 12.33);
+        return new Dish(null, "Anti Pasta", 12);
     }
 
     public static Dish getUpdated() {
-        return new Dish(DISH1_ID, "Pepperoni Pizza Updated", 13.00);
+        return new Dish(DISH1_ID, "Pepperoni Pizza Updated", 13);
     }
 
     static {
