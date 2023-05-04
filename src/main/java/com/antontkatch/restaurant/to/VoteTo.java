@@ -5,9 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 
 @EqualsAndHashCode(callSuper = true)
@@ -17,8 +17,9 @@ import java.time.LocalTime;
 public class VoteTo extends BaseTo {
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private LocalDate date = LocalDate.now();
+    @DateTimeFormat
+    LocalDateTime dateTime = LocalDateTime.now();
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private LocalTime time = LocalTime.now();
+    Integer restaurantId;
 }

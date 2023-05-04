@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "vote", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "restaurant_id", "vote_date"}, name = "vote_unique_user_date_restaurant_idx")})
@@ -19,9 +19,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Vote extends AbstractBaseEntity {
 
-    @Column(name = "vote_date", nullable = false)
+    @Column(name = "vote_date", columnDefinition = "timestamp default now()", nullable = false)
     @NotNull
-    private LocalDate date;
+    private LocalDateTime dateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -38,9 +38,9 @@ public class Vote extends AbstractBaseEntity {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private User user;
 
-    public Vote(Integer id, LocalDate date, Restaurant restaurant, User user) {
+    public Vote(Integer id, LocalDateTime dateTime, Restaurant restaurant, User user) {
         super(id);
-        this.date = date;
+        this.dateTime = dateTime;
         this.restaurant = restaurant;
         this.user = user;
     }
@@ -49,7 +49,7 @@ public class Vote extends AbstractBaseEntity {
     public String toString() {
         return "Vote{" +
                 "id=" + id +
-                ", date=" + date +
+                ", date=" + dateTime +
                 '}';
     }
 }

@@ -26,18 +26,19 @@ public class VoteService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Vote save(Vote vote, int userId, int restaurantId) {
-        if (!vote.isNew() && voteRepository.getExisted(vote.id(), userId) == null) {
+    public VoteTo save(Vote vote, int userId, int restaurantId) {
+
+        if (!vote.isNew() && restaurantRepository.getExisted(restaurantId) == null && voteRepository.getExisted(vote.id(), userId) == null) {
             return null;
         }
 
         vote.setUser(userRepository.getReferenceById(userId));
-        vote.setRestaurant(restaurantRepository.getExisted(restaurantId));
-        return voteRepository.save(vote);
+        vote.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        return modelMapper.map(voteRepository.save(vote), VoteTo.class);
     }
 
-    public List<Vote> getAllTodayVotes() {
-        return voteRepository.getAllTodayVotes();
+    public List<VoteTo> getAllTodayVotes() {
+        return voteRepository.getAllTodayVotes().stream().map(vote -> modelMapper.map(vote, VoteTo.class)).toList();
     }
 
     public Vote get(int id, int userId) {
@@ -50,5 +51,9 @@ public class VoteService {
 
     public Vote convertVoteToVote(VoteTo voteTo) {
         return modelMapper.map(voteTo, Vote.class);
+    }
+
+    public VoteTo convertVoteVoteTo(Vote vote) {
+        return modelMapper.map(vote, VoteTo.class);
     }
 }

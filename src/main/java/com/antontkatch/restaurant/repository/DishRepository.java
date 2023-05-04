@@ -28,6 +28,7 @@ public interface DishRepository extends BaseRepository<Dish> {
         }
     }
 
+    @Cacheable("dish")
     default Dish getExisted(int id, int menuId) {
         return findById(id)
                 .filter(dish -> dish.getMenu().getId() == menuId)
