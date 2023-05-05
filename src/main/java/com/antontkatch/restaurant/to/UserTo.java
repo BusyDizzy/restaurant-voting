@@ -4,10 +4,7 @@ import com.antontkatch.restaurant.HasIdAndEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
 import java.beans.ConstructorProperties;
 import java.io.Serial;
@@ -17,6 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
+@ToString(callSuper = true, exclude = {"password"})
 public class UserTo extends NamedTo implements Serializable, HasIdAndEmail {
 
     @Serial
@@ -37,10 +35,5 @@ public class UserTo extends NamedTo implements Serializable, HasIdAndEmail {
         super(id, name);
         this.email = email;
         this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "UserTo:" + id + '[' + email + ']';
     }
 }

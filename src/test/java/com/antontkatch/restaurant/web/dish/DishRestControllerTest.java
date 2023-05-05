@@ -53,6 +53,14 @@ public class DishRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void getRestaurantNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(RestaurantController.REST_URL + "/" + NOT_FOUND + "/menus/" + MENU1_ID + "/dishes/" + DISH1_ID)
+                .with(userHttpBasic(user)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
     void update() throws Exception {
         Dish updated = getUpdated();
         perform(MockMvcRequestBuilders.put(REST_URL + "/" + DISH1_ID)
@@ -61,7 +69,7 @@ public class DishRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        DISH_MATCHER.assertMatch(service.get(DISH1_ID, MENU1_ID), updated);
+        DISH_MATCHER.assertMatch(service.get(DISH1_ID, MENU1_ID, RESTAURANT1_ID), updated);
     }
 
     @Test
@@ -109,7 +117,7 @@ public class DishRestControllerTest extends AbstractControllerTest {
         int newId = created.id();
         newDish.setId(newId);
         DISH_MATCHER.assertMatch(created, newDish);
-        DISH_MATCHER.assertMatch(service.get(newId, MENU1_ID), newDish);
+        DISH_MATCHER.assertMatch(service.get(newId, MENU1_ID, RESTAURANT1_ID), newDish);
     }
 
     @Test
@@ -140,7 +148,7 @@ public class DishRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertThrows(NotFoundException.class, () -> service.get(DISH1_ID, MENU1_ID));
+        assertThrows(NotFoundException.class, () -> service.get(DISH1_ID, MENU1_ID, RESTAURANT1_ID));
     }
 
     @Test

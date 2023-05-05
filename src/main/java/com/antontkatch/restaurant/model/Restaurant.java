@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString(callSuper = true, exclude = {"menus", "votes"})
 public class Restaurant extends AbstractNamedEntity {
 
     @Column(name = "address", nullable = false, unique = true)
@@ -29,13 +31,11 @@ public class Restaurant extends AbstractNamedEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OrderBy("date DESC")
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonManagedReference(value = "restaurant-menu")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<Menu> menus;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonManagedReference(value = "restaurant-votes")
     @JsonIgnore
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<Vote> votes;
@@ -43,14 +43,5 @@ public class Restaurant extends AbstractNamedEntity {
     public Restaurant(Integer id, String name, String address) {
         super(id, name);
         this.address = address;
-    }
-
-    @Override
-    public String toString() {
-        return "Restaurant{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                '}';
     }
 }

@@ -17,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class RestaurantService {
-
     private final RestaurantRepository restaurantRepository;
 
     private final DishRepository dishRepository;
@@ -25,15 +24,9 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     @Cacheable("restaurants")
     public List<RestaurantTo> findAllWithTodayMenu() {
-        List<Restaurant> restaurants = restaurantRepository.findAll().stream()
-                .filter(restaurant -> restaurant.getMenus()
-                        .stream()
-                        .findFirst().get().getDate().isEqual(LocalDate.now()))
-                .toList();
         List<RestaurantTo> restaurantTos = new ArrayList<>();
-        for (Restaurant restaurant : restaurants) {
-            Menu menu = restaurant.getMenus()
-                    .stream()
+        for (Restaurant restaurant : restaurantRepository.findAllWithTodayMenus()) {
+            Menu menu = restaurant.getMenus().stream()
                     .filter(m -> m.getDate().isEqual(LocalDate.now()))
                     .findFirst().get();
             menu.setDishes(dishRepository.getAll(menu.getId()));

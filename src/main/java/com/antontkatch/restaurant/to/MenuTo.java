@@ -1,10 +1,7 @@
 package com.antontkatch.restaurant.to;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class MenuTo extends BaseTo {
 
     @NotNull

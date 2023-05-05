@@ -30,21 +30,21 @@ import static com.antontkatch.restaurant.util.validation.ValidationUtil.checkNew
 @Tag(name = "Dish Controller")
 public class DishController {
 
-    static final String REST_URL = MenuController.REST_URL + "/" + "{menuId}/dishes";
+    static final String REST_URL = MenuController.REST_URL + "/{menuId}/dishes";
 
     @Autowired
     private final DishService service;
 
     @GetMapping
-    public List<Dish> getAll(@PathVariable int menuId) {
+    public List<Dish> getAll(@PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("getAll");
-        return service.getAll(menuId);
+        return service.getAll(menuId, restaurantId);
     }
 
     @GetMapping("/{id}")
-    public Dish get(@PathVariable int id, @PathVariable int menuId) {
-        log.info("get dish {} of menu {}", id, menuId);
-        return service.get(id, menuId);
+    public Dish get(@PathVariable int id, @PathVariable int menuId, @PathVariable int restaurantId) {
+        log.info("get dish {} of menu {} and restaurant {}", id, menuId, restaurantId);
+        return service.get(id, menuId, restaurantId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -53,7 +53,7 @@ public class DishController {
         String URL = RestaurantController.REST_URL + restaurantId + "/menus/" + menuId + "/dishes";
         log.info("create dish {} of menu {}", dishTo, menuId);
         checkNew(dishTo);
-        Dish created = service.save(service.convertDishToDish(dishTo), menuId);
+        Dish created = service.save(service.convertDishToDish(dishTo), menuId, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -63,17 +63,17 @@ public class DishController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "dishes", allEntries = true)
-    public void delete(@PathVariable int id, @PathVariable int menuId) {
+    public void delete(@PathVariable int id, @PathVariable int menuId, @PathVariable int restaurantId) {
         log.info("delete dish {} of menu {}", menuId, menuId);
-        service.delete(id, menuId);
+        service.delete(id, menuId, restaurantId);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(value = "dishes", allEntries = true)
-    public void update(@Valid @RequestBody DishTo dishTo, @PathVariable int menuId, @PathVariable int id) {
+    public void update(@Valid @RequestBody DishTo dishTo, @PathVariable int menuId, @PathVariable int id, @PathVariable int restaurantId) {
         log.info("update dish {} with menu id={}", dishTo, menuId);
         assureIdConsistent(dishTo, id);
-        service.save(service.convertDishToDish(dishTo), menuId);
+        service.save(service.convertDishToDish(dishTo), menuId, restaurantId);
     }
 }

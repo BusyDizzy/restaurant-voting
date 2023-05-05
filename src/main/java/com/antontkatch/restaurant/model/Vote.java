@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true, exclude = {"restaurant", "user"})
 public class Vote extends AbstractBaseEntity {
 
     @Column(name = "vote_date", columnDefinition = "timestamp default now()", nullable = false)
@@ -26,14 +24,12 @@ public class Vote extends AbstractBaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
-//    @JsonBackReference(value = "restaurant-votes")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Restaurant restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
-//    @JsonBackReference(value = "user-votes")
     @JsonIgnore
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private User user;
@@ -43,13 +39,5 @@ public class Vote extends AbstractBaseEntity {
         this.dateTime = dateTime;
         this.restaurant = restaurant;
         this.user = user;
-    }
-
-    @Override
-    public String toString() {
-        return "Vote{" +
-                "id=" + id +
-                ", date=" + dateTime +
-                '}';
     }
 }

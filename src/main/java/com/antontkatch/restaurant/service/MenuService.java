@@ -27,10 +27,12 @@ public class MenuService {
     private final DishRepository dishRepository;
 
     public Menu get(int id, int restaurantId) {
+        checkRestaurant(restaurantId);
         return menuRepository.getExisted(id, restaurantId);
     }
 
     public Menu getWithDishes(int id, int restaurantId) {
+        checkRestaurant(restaurantId);
         Menu menu = menuRepository.getExisted(id, restaurantId);
         Assert.notNull(menu, "menu must not be null");
         menu.setDishes(dishRepository.getAll(id));
@@ -38,6 +40,7 @@ public class MenuService {
     }
 
     public Menu getTodayMenu(int restaurantId) {
+        checkRestaurant(restaurantId);
         Menu menu = menuRepository.getCurrent(restaurantId);
         Assert.notNull(menu, "menu must not be null");
         menu.setDishes(dishRepository.getAll(menu.getId()));
@@ -45,16 +48,19 @@ public class MenuService {
     }
 
     public void delete(int id, int restaurantId) {
+        checkRestaurant(restaurantId);
         menuRepository.deleteExisted(id, restaurantId);
     }
 
     public List<Menu> getAll(int restaurantId) {
+        checkRestaurant(restaurantId);
         return menuRepository.getAll(restaurantId);
     }
 
 
     @Transactional
     public Menu save(Menu menu, int restaurantId) {
+        checkRestaurant(restaurantId);
         Assert.notNull(menu, "menu must not be null");
         if (!menu.isNew() && menuRepository.getExisted(menu.id(), restaurantId) == null) {
             return null;
@@ -65,5 +71,9 @@ public class MenuService {
 
     public Menu convertMenuToMenu(MenuTo menuTo) {
         return modelMapper.map(menuTo, Menu.class);
+    }
+
+    private void checkRestaurant(int restaurantId) {
+        restaurantRepository.getExisted(restaurantId);
     }
 }

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -20,22 +17,21 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(callSuper = true, exclude = {"dishes", "restaurant"})
 public class Menu extends AbstractBaseEntity {
 
-    @Column(name = "date_added", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
+    @Column(name = "date_added", nullable = false)
     @NotNull
     private LocalDate date;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "menu")
     @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonManagedReference(value = "menu-dishes")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private List<Dish> dishes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
-//    @JsonBackReference(value = "restaurant-menu")
     @JsonIgnore
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Restaurant restaurant;
@@ -49,13 +45,5 @@ public class Menu extends AbstractBaseEntity {
         super(id);
         this.date = date;
         this.restaurant = restaurant;
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "id=" + id +
-                ", date=" + date +
-                '}';
     }
 }

@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 
@@ -13,6 +15,8 @@ import org.hibernate.validator.constraints.Range;
 @Table(name = "dish", uniqueConstraints = {@UniqueConstraint(columnNames = {"menu_id", "name", "price"}, name = "dish_unique_menu_id_name_price_idx")})
 @Getter
 @Setter
+@NoArgsConstructor
+@ToString(callSuper = true, exclude = {"menu"})
 public class Dish extends AbstractNamedEntity {
 
     @Column(name = "price", nullable = false)
@@ -23,17 +27,9 @@ public class Dish extends AbstractNamedEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     @NotNull
-//    @JsonBackReference(value = "menu-dishes")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @JsonIgnore
     private Menu menu;
-
-    public Dish() {
-    }
-
-    public Dish(String dishName, Integer price) {
-        this(null, dishName, price);
-    }
 
     public Dish(Integer id, String name, Integer price) {
         super(id, name);
@@ -44,14 +40,5 @@ public class Dish extends AbstractNamedEntity {
         super(id, name);
         this.price = price;
         this.menu = menu;
-    }
-
-    @Override
-    public String toString() {
-        return "Dish{" +
-                "id=" + id +
-                ", price=" + price +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

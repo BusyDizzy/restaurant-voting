@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -35,13 +37,21 @@ public class MenuRestControllerTest extends AbstractControllerTest {
     private MenuService service;
 
     @Test
-    void getAll() throws Exception {
+    void getAllForRestaurant() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL)
                 .with(userHttpBasic(admin)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MENU_MATCHER.contentJson(menu1, menu4));
+    }
+
+    @Test
+    void getAllForRestaurantNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(RestaurantController.REST_URL + "/" + NOT_FOUND + "/menus")
+                .with(userHttpBasic(admin)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 
     @Test
@@ -102,6 +112,19 @@ public class MenuRestControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void updateWithDuplicate() throws Exception {
+        Menu updated = getUpdated();
+        updated.setDate(LocalDate.now());
+        perform(MockMvcRequestBuilders.put(REST_URL + "/" + MENU1_ID)
+                .with(userHttpBasic(admin))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 
     @Test

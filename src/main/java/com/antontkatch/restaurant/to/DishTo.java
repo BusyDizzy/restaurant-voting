@@ -1,16 +1,14 @@
 package com.antontkatch.restaurant.to;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.Value;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class DishTo extends NamedTo {
 
     @NotNull
